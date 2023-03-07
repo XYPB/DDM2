@@ -33,6 +33,7 @@ if __name__ == "__main__":
     opt = Logger.dict_to_nonedict(opt)
 
     # logging
+    force_cudnn_initialization()
     torch.backends.cudnn.enabled = True
     torch.backends.cudnn.benchmark = True
 
@@ -67,7 +68,6 @@ if __name__ == "__main__":
         logger.info('Resuming training from epoch: {}, iter: {}.'.format(
             current_epoch, current_step))
 
-    force_cudnn_initialization()
     if opt['phase'] == 'train':
         while current_step < n_iter:
             current_epoch += 1
