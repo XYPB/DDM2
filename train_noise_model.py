@@ -11,6 +11,12 @@ import numpy as np
 
 print(torch.__version__, torch.version.cuda)
 
+def force_cudnn_initialization():
+    s = 32
+    dev = torch.device('cuda')
+    torch.nn.functional.conv2d(torch.zeros(s, s, s, s, device=dev), torch.zeros(s, s, s, s, device=dev))
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config', type=str, default='config/sr_sr3_16_128.json',
@@ -61,6 +67,7 @@ if __name__ == "__main__":
         logger.info('Resuming training from epoch: {}, iter: {}.'.format(
             current_epoch, current_step))
 
+    force_cudnn_initialization()
     if opt['phase'] == 'train':
         while current_step < n_iter:
             current_epoch += 1
