@@ -1,9 +1,5 @@
 logs
-__pycache__
-core/__pycache__/*
-data/__pycache__/*
-model/__pycache__/*
-model/mri_modules/__pycache__/*
+__pycache__/
 results
 dataset
-*.pyc
+*.py[cod]
