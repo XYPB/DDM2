@@ -159,16 +159,17 @@ if __name__ == "__main__":
     #                      phase='train', val_volume_idx=40, padding=3)#, initial_stage_file='/media/administrator/1305D8BDB8D46DEE/stanford/MRI/experiments/v25_noisemodel/stages.txt')
 
     # qiyuan's data
-    valid_mask = np.zeros(108,)
-    valid_mask[18:] += 1
-    valid_mask = valid_mask.astype(np.bool8)
+    # valid_mask = np.zeros(108,)
+    # valid_mask[18:] += 1
+    # valid_mask = valid_mask.astype(np.bool8)
+    valid_mask = [10,160]
     dataset = MRIDataset('dataset/stanford_hardi/HARDI150.nii.gz', valid_mask,
                          phase='train', val_volume_idx=40, padding=3)#, initial_stage_file='/media/administrator/1305D8BDB8D46DEE/stanford/MRI/experiments/v25_noisemodel/stages.txt')
 
 
     trainloader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=False, num_workers=0)
     for i, data in enumerate(trainloader):
-        if i < 95 != 0:
+        if i % 10 != 0:
             continue
         if i > 108:
             break
@@ -186,5 +187,6 @@ if __name__ == "__main__":
         # plt.show()
 
         plt.imshow(vis, cmap='gray')
+        plt.title(f'idx: {i}')
         plt.show()
         #break
