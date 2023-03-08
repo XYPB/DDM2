@@ -98,7 +98,7 @@
     },
     // for Phase1
     "noise_model": {
-        "resume_state": null, //"/home/users/tiangex/MRI_denoise/experiments/sb_1_noisemodel/checkpoint/latest",
+        "resume_state": "/home/yd344/project/DDM2/experiments/sb_1_state_matching_noisemodel_230307_191642/latest", //"/home/users/tiangex/MRI_denoise/experiments/sb_1_noisemodel/checkpoint/latest",
         "drop_rate": 0.0,
         "unet": {
             "in_channel": 2,
@@ -132,5 +132,5 @@
             "lr": 1e-4
         }
     },
-    "stage2_file": null
+    "stage2_file": "/home/yd344/project/DDM2/experiments/sb_1_state_matching_noisemodel_230307_191642/stages.txt"
 }
