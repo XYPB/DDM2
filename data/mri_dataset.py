@@ -27,7 +27,7 @@ class MRIDataset(Dataset):
 
         # parse mask
         assert type(valid_mask) is (list or tuple) and len(valid_mask) == 2
- 
+
         # mask data
         raw_data = raw_data[:,:,:,valid_mask[0]:valid_mask[1]] 
         self.data_size_before_padding = raw_data.shape
@@ -162,7 +162,7 @@ if __name__ == "__main__":
     valid_mask = np.zeros(108,)
     valid_mask[18:] += 1
     valid_mask = valid_mask.astype(np.bool8)
-    dataset = MRIDataset('/media/sda5/MRI/qiyuan/forAkshay/mwu100307/diff/mwu100307_diff.nii.gz', valid_mask,
+    dataset = MRIDataset('dataset/stanford_hardi/HARDI150.nii.gz', valid_mask,
                          phase='train', val_volume_idx=40, padding=3)#, initial_stage_file='/media/administrator/1305D8BDB8D46DEE/stanford/MRI/experiments/v25_noisemodel/stages.txt')
 
 
