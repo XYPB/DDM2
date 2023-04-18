@@ -114,7 +114,6 @@ class MRIDataset(Dataset):
         raw_input = self.raw_data
         print(self.in_channel)
         print(self.padding)
-        exit()
         if self.padding > 0:
             raw_input = np.concatenate((
                                     raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,volume_idx:volume_idx+self.padding],
@@ -125,18 +124,23 @@ class MRIDataset(Dataset):
             raw_input = np.concatenate((
                                     raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,[volume_idx+self.padding-1]],
                                     raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,[volume_idx+self.padding]]), axis=-1)
-
+        print(raw_input.shape)
+        
         # w, h, c, d = raw_input.shape
         # raw_input = np.reshape(raw_input, (w, h, -1))
         if len(raw_input.shape) == 4:
             raw_input = raw_input[:,:,0]
+        print(raw_input.shape)
         raw_input = self.transforms(raw_input) # only support the first channel for now
         # raw_input = raw_input.view(c, d, w, h)
 
+        print(raw_input.shape)
         ret = dict(X=raw_input[[-1], :, :], condition=raw_input[:-1, :, :])
+        print(ret['X'].shape, ret['condition'].shape)
 
         if self.matched_state is not None:
             ret['matched_state'] = torch.zeros(1,) + self.matched_state[volume_idx][slice_idx]
+        exit()
 
         return ret
 
