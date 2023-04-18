@@ -29,10 +29,14 @@ class MRIDataset(Dataset):
         assert type(valid_mask) is (list or tuple) and len(valid_mask) == 2
 
         # mask data
+        print(valid_mask)
+        print(raw_data.shape)
         raw_data = raw_data[:,:,:,valid_mask[0]:valid_mask[1]] 
+        print(raw_data.shape)
         self.data_size_before_padding = raw_data.shape
 
         self.raw_data = np.pad(raw_data, ((0,0), (0,0), (in_channel//2, in_channel//2), (self.padding, self.padding)), mode='wrap')
+        print(raw_data.shape)
 
         # running for Stage3?
         if stage2_file is not None:
@@ -108,7 +112,9 @@ class MRIDataset(Dataset):
             volume_idx = self.val_volume_idx[index]
 
         raw_input = self.raw_data
-       
+        print(self.in_channel)
+        print(self.padding)
+        exit()
         if self.padding > 0:
             raw_input = np.concatenate((
                                     raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,volume_idx:volume_idx+self.padding],

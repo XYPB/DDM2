@@ -292,21 +292,6 @@ class GaussianDiffusion(nn.Module):
             (1 - continuous_sqrt_alpha_cumprod**2).sqrt() * noise
         )
 
-    def determine_input_stage(self, x, x_start):
-        min_lh = 999
-        min_t = -1
-        for t in range(sqrt_alphas_cumprod_prev.shape[0]-500):
-            noise = data['X'] - sqrt_alphas_cumprod_prev[t] * denoised
-            noise_mean = torch.mean(noise)
-            noise = noise - noise_mean
-
-            mu, std = norm.fit(noise.cpu().numpy())
-
-            diff = np.abs((1 - sqrt_alphas_cumprod_prev[t]**2).sqrt().cpu().numpy() - std)
-
-            if diff < min_lh:
-                min_lh = diff
-                min_t = t
 
     @torch.no_grad()
     def interpolate(self, x, t = None, lams=[0.5]):
