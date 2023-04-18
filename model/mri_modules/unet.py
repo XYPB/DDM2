@@ -275,6 +275,7 @@ class UNet(nn.Module):
 
 
     def forward(self, x, time=None):
+        print(time)
         t = self.noise_level_mlp(time) if exists(
             self.noise_level_mlp) else None
 

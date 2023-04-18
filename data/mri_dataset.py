@@ -29,14 +29,10 @@ class MRIDataset(Dataset):
         assert type(valid_mask) is (list or tuple) and len(valid_mask) == 2
 
         # mask data
-        print(valid_mask)
-        print(raw_data.shape)
         raw_data = raw_data[:,:,:,valid_mask[0]:valid_mask[1]] 
-        print(raw_data.shape)
         self.data_size_before_padding = raw_data.shape
 
         self.raw_data = np.pad(raw_data, ((0,0), (0,0), (in_channel//2, in_channel//2), (self.padding, self.padding)), mode='wrap')
-        print(raw_data.shape)
 
         # running for Stage3?
         if stage2_file is not None:
@@ -112,8 +108,6 @@ class MRIDataset(Dataset):
             volume_idx = self.val_volume_idx[index]
 
         raw_input = self.raw_data
-        print(self.in_channel)
-        print(self.padding)
         if self.padding > 0:
             raw_input = np.concatenate((
                                     raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,volume_idx:volume_idx+self.padding],
@@ -124,23 +118,18 @@ class MRIDataset(Dataset):
             raw_input = np.concatenate((
                                     raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,[volume_idx+self.padding-1]],
                                     raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,[volume_idx+self.padding]]), axis=-1)
-        print(raw_input.shape)
         
         # w, h, c, d = raw_input.shape
         # raw_input = np.reshape(raw_input, (w, h, -1))
         if len(raw_input.shape) == 4:
             raw_input = raw_input[:,:,0]
-        print(raw_input.shape)
         raw_input = self.transforms(raw_input) # only support the first channel for now
         # raw_input = raw_input.view(c, d, w, h)
 
-        print(raw_input.shape)
         ret = dict(X=raw_input[[-1], :, :], condition=raw_input[:-1, :, :])
-        print(ret['X'].shape, ret['condition'].shape)
 
         if self.matched_state is not None:
             ret['matched_state'] = torch.zeros(1,) + self.matched_state[volume_idx][slice_idx]
-        exit()
 
         return ret
 

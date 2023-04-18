@@ -70,7 +70,7 @@ class DDM2Stage1(BaseModel):
 
         # set log
         self.log_dict['l_pix'] = l_pix.item()
-        
+
     def test(self, continous=False):
         self.netG.eval()
         #with torch.no_grad(): # TTT
