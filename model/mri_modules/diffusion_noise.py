@@ -173,8 +173,16 @@ class GaussianDiffusion(nn.Module):
             (1 - alphas) / np.sqrt(1 - alphas_cumprod)))
 
     def predict_start_from_noise(self, x_t, t, noise):
-        return self.sqrt_recip_alphas_cumprod[t] * x_t - \
-            self.sqrt_recipm1_alphas_cumprod[t] * noise
+        if isinstance(t, int):
+            return self.sqrt_recip_alphas_cumprod[t] * x_t - \
+                self.sqrt_recipm1_alphas_cumprod[t] * noise
+        else:
+            print(self.sqrt_recip_alphas_cumprod[t].shape)
+            coeff1 = self.sqrt_recip_alphas_cumprod[t].view(-1, 1, 1, 1)
+            coeff2 = self.sqrt_recipm1_alphas_cumprod[t].view(-1, 1, 1, 1)
+            print(coeff1.shape, x_t.shape, noise.shape)
+            exit()
+            return coeff1 * x_t - coeff2 * noise
 
 
     def q_posterior(self, eps_t, x_t, t):
