@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
         if not args.save:
             denoised_img = Metrics.tensor2img(visuals['denoised'])  # uint8
-            input_img = Metrics.tensor2img(visuals['Y'])  # uint8
+            input_img = Metrics.tensor2img(visuals['X'])  # uint8
 
             # save img
             Metrics.save_img(
