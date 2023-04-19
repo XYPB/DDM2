@@ -339,7 +339,6 @@ class GaussianDiffusion(nn.Module):
         fixed_alphas = torch.cat(fixed_alphas, dim=0)
 
         t = np.random.randint(1, self.num_timesteps + 1, size=b)
-        print(t)
 
         continuous_sqrt_alpha_cumprod = []
         for t_ in t:
@@ -352,12 +351,9 @@ class GaussianDiffusion(nn.Module):
         continuous_sqrt_alpha_cumprod = torch.FloatTensor(
             continuous_sqrt_alpha_cumprod
         ).to(x_start.device)
-        print(continuous_sqrt_alpha_cumprod, continuous_sqrt_alpha_cumprod.shape)
 
         continuous_sqrt_alpha_cumprod = continuous_sqrt_alpha_cumprod.view(
             b, -1)
-        print(continuous_sqrt_alpha_cumprod)
-        exit()
 
         noise = (x_in['X'] -fixed_alphas * x_start.detach()) / (1 - fixed_alphas**2).sqrt()
         
