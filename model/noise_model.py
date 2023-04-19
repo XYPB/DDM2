@@ -102,7 +102,7 @@ class DDPM(BaseModel):
             out_dict['SAM'] = self.SR.detach().float().cpu()
         else:
             out_dict['denoised'] = self.denoised.detach().float().cpu()
-            out_dict['X'] = self.data['Y'].detach().float().cpu()
+            out_dict['Y'] = self.data['Y'].detach().float().cpu()
 
         return out_dict
 
