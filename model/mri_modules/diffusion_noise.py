@@ -177,11 +177,8 @@ class GaussianDiffusion(nn.Module):
             return self.sqrt_recip_alphas_cumprod[t] * x_t - \
                 self.sqrt_recipm1_alphas_cumprod[t] * noise
         else:
-            print(self.sqrt_recip_alphas_cumprod[t].shape)
             coeff1 = self.sqrt_recip_alphas_cumprod[t].view(-1, 1, 1, 1)
             coeff2 = self.sqrt_recipm1_alphas_cumprod[t].view(-1, 1, 1, 1)
-            print(coeff1.shape, x_t.shape, noise.shape)
-            exit()
             return coeff1 * x_t - coeff2 * noise
 
 
