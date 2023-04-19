@@ -374,7 +374,7 @@ class GaussianDiffusion(nn.Module):
             x_start=x_start, continuous_sqrt_alpha_cumprod=continuous_sqrt_alpha_cumprod.view(-1, 1, 1, 1), noise=noise.detach())
         
         eps_t = self.denoisor(x_noisy, continuous_sqrt_alpha_cumprod)
-        x_recon = self.predict_start_from_noise(x_noisy, t, eps_t)
+        x_recon = self.predict_start_from_noise(x_noisy, t-1, eps_t)
 
         # J-Invariance optimization
         total_loss = self.mseloss(x_recon, x_in['X'])
