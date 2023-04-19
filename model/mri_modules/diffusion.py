@@ -189,7 +189,7 @@ class GaussianDiffusion(nn.Module):
                         mask_condition=None, ttt_opt=None):
         
         b, c, w, h = x.shape
- 
+
         single_noise_level = torch.FloatTensor(
         [self.sqrt_alphas_cumprod_prev[t+1]]).repeat(b, 1).to(x.device)
 
@@ -238,10 +238,10 @@ class GaussianDiffusion(nn.Module):
         device = self.betas.device
         #ample_inter = (1 | (self.num_timesteps//10))
         sample_inter = 100
-  
+
         x = x_in['X']
         self.input = x_in['X']
- 
+
         shape = x.shape
         img = x
         ret_img = x
