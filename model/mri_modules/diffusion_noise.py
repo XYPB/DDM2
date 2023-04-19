@@ -338,7 +338,7 @@ class GaussianDiffusion(nn.Module):
         
         fixed_alphas = torch.cat(fixed_alphas, dim=0)
 
-        t = np.random.randint(b, self.num_timesteps + 1)
+        t = np.random.randint(1, self.num_timesteps + 1, size=b)
         print(t)
 
         continuous_sqrt_alpha_cumprod = []
