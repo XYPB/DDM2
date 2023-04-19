@@ -41,6 +41,7 @@
         }
     },
     "model": {
+        "noise_diffusion": true,
         "which_model_G": "mri", // use the ddpm or sr3 network structure
         "finetune_norm": false,
         "drop_rate": 0.0,
@@ -100,7 +101,7 @@
     },
     // for Phase1
     "noise_model": {
-        "resume_state": null, //"/home/yd344/project/DDM2/experiments/hardi150_noisemodel_230307_184932/checkpoint/latest",
+        "resume_state": "/home/yd344/project/DDM2/experiments/hardi150_noisemodel_230307_184932/checkpoint/latest",
         "drop_rate": 0.0,
         "unet": {
             "in_channel": 2,

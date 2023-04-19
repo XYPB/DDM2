@@ -88,6 +88,7 @@ def define_G(opt):
     if model_opt['which_model_G'] == 'mri':
         from .mri_modules import unet
         from .mri_modules import diffusion as diffusion
+        from .mri_modules import diffusion_noise as diffusion_noise
     else:
         raise NotImplementedError
 
@@ -121,16 +122,28 @@ def define_G(opt):
         with_noise_level_emb=False,   
     )
 
-    netG = diffusion.GaussianDiffusion(
-        denoisor,
-        image_size=model_opt['diffusion']['image_size'],
-        channels=model_opt['diffusion']['channels'],
-        loss_type=model_opt['loss_type'],
-        drop_rate=model_opt['drop_rate'],
-        conditional=model_opt['diffusion']['conditional'],
-        schedule_opt=model_opt['beta_schedule']['train'],
-        denoise_fn=denoise_fn
-    )
+    if model_opt['noise_diffusion']:
+        netG = diffusion_noise.GaussianDiffusion(
+            denoisor,
+            image_size=model_opt['diffusion']['image_size'],
+            channels=model_opt['diffusion']['channels'],
+            loss_type=model_opt['loss_type'],
+            drop_rate=model_opt['drop_rate'],
+            conditional=model_opt['diffusion']['conditional'],
+            schedule_opt=model_opt['beta_schedule']['train'],
+            denoise_fn=denoise_fn
+        )
+    else:
+        netG = diffusion.GaussianDiffusion(
+            denoisor,
+            image_size=model_opt['diffusion']['image_size'],
+            channels=model_opt['diffusion']['channels'],
+            loss_type=model_opt['loss_type'],
+            drop_rate=model_opt['drop_rate'],
+            conditional=model_opt['diffusion']['conditional'],
+            schedule_opt=model_opt['beta_schedule']['train'],
+            denoise_fn=denoise_fn
+        )
     
     if opt['phase'] == 'train':
         init_weights(netG, init_type='orthogonal')
