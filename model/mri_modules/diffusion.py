@@ -350,6 +350,8 @@ class GaussianDiffusion(nn.Module):
 
         continuous_sqrt_alpha_cumprod = continuous_sqrt_alpha_cumprod.view(
             b, -1)
+        print(continuous_sqrt_alpha_cumprod.shape)
+        exit()
 
         noise = (x_in['X'] -fixed_alphas * x_start.detach()) / (1 - fixed_alphas**2).sqrt()
         
