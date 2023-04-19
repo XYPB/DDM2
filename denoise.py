@@ -75,6 +75,7 @@ if __name__ == "__main__":
 
     for step,  val_data in enumerate(val_loader):
         idx += 1
+        print(val_data.shape)
         diffusion.feed_data(val_data)
         diffusion.test(continous=False)
         visuals = diffusion.get_current_visuals(need_LR=False)
