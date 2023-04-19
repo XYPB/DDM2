@@ -48,7 +48,6 @@ if __name__ == "__main__":
             ##########################
 
             val_set = Data.create_dataset(dataset_opt, phase, stage2_file=opt['stage2_file'])
-            print(len(val_set))
             val_loader = Data.create_dataloader(
                 val_set, dataset_opt, phase)
     logger.info('Initial Dataset Finished')
