@@ -48,6 +48,7 @@ if __name__ == "__main__":
             ##########################
 
             val_set = Data.create_dataset(dataset_opt, phase, stage2_file=opt['stage2_file'])
+            print(len(val_set))
             val_loader = Data.create_dataloader(
                 val_set, dataset_opt, phase)
     logger.info('Initial Dataset Finished')
@@ -75,7 +76,6 @@ if __name__ == "__main__":
 
     for step,  val_data in enumerate(val_loader):
         idx += 1
-        print(val_data.shape)
         diffusion.feed_data(val_data)
         diffusion.test(continous=False)
         visuals = diffusion.get_current_visuals(need_LR=False)
