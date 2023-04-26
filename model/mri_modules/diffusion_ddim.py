@@ -234,6 +234,7 @@ class GaussianDiffusion(nn.Module):
         print((1 - self.alphas_cumprod[t_prev]), ddim_coef1 ** 2)
         print(t, t_prev, ddim_coef1, ddim_coef2, ddim_coef3)
         x_prev = ddim_coef1 * x_recon + ddim_coef2 * noise + ddim_coef3 * eps_t
+        print(x_prev)
         return x_prev, noise, eps_t, x_recon
 
 
