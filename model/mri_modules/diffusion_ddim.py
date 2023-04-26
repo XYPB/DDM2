@@ -231,7 +231,7 @@ class GaussianDiffusion(nn.Module):
         ddim_coef3 = self.eta * torch.sqrt(
             (1 - self.alphas_cumprod[t_prev]) - ddim_coef1 ** 2
         ).view(-1, 1, 1, 1)
-        print(x_recon.shape, ddim_coef1.shape, ddim_coef2.shape)
+        print(x_recon.shape, eps_t.shape, ddim_coef1.shape, ddim_coef2.shape, ddim_coef3.shape)
         x_prev = ddim_coef1 * x_recon + ddim_coef2 * noise + ddim_coef3 * eps_t
         return x_prev, noise, eps_t, x_recon
 
