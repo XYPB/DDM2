@@ -270,7 +270,7 @@ class GaussianDiffusion(nn.Module):
 
         x_recon = x_in['X']
 
-        for i, j in tqdm(zip(reversed(seq), reversed(seq_prev)), desc='sampling loop time step', total=matched_state):
+        for i, j in tqdm(zip(reversed(seq), reversed(seq_prev)), desc='sampling loop time step', total=len(seq)):
             
             # ob, c, w, h = img.shape
             img, noise, eps_t, x_recon = self.p_sample(img, i, j, self.eta, condition_x=x_recon, ttt_opt=ttt)
