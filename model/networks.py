@@ -145,7 +145,8 @@ def define_G(opt):
             conditional=model_opt['diffusion']['conditional'],
             schedule_opt=model_opt['beta_schedule']['train'],
             denoise_fn=denoise_fn,
-            eta=model_opt['diffusion']['eta']
+            eta=model_opt['diffusion']['eta'],
+            sample_type=model_opt['diffusion']['sample_type']
         )
     else:
         netG = diffusion.GaussianDiffusion(
