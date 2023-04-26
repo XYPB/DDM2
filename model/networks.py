@@ -89,6 +89,7 @@ def define_G(opt):
         from .mri_modules import unet
         from .mri_modules import diffusion as diffusion
         from .mri_modules import diffusion_noise as diffusion_noise
+        from.mri_modules import diffusion_ddim as diffusion_ddim
     else:
         raise NotImplementedError
 
@@ -132,6 +133,19 @@ def define_G(opt):
             conditional=model_opt['diffusion']['conditional'],
             schedule_opt=model_opt['beta_schedule']['train'],
             denoise_fn=denoise_fn
+        )
+    elif model_opt['ddim']:
+        netG = diffusion_ddim.GaussianDiffusion(
+            denoisor,
+            image_size=model_opt['diffusion']['image_size'],
+            timesteps=model_opt['diffusion']['timesteps'],
+            channels=model_opt['diffusion']['channels'],
+            loss_type=model_opt['loss_type'],
+            drop_rate=model_opt['drop_rate'],
+            conditional=model_opt['diffusion']['conditional'],
+            schedule_opt=model_opt['beta_schedule']['train'],
+            denoise_fn=denoise_fn,
+            eta=model_opt['diffusion']['eta']
         )
     else:
         netG = diffusion.GaussianDiffusion(
