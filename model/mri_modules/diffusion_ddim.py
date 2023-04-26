@@ -85,6 +85,7 @@ class GaussianDiffusion(nn.Module):
         schedule_opt=None,
         denoise_fn=None,
         eta=0,
+        sample_type="uniform"
     ):
         super().__init__()
         self.drop_rate = drop_rate
@@ -97,6 +98,7 @@ class GaussianDiffusion(nn.Module):
         self.conditional = conditional
         self.timesteps = timesteps
         self.eta = eta
+        self.sample_type = sample_type
 
         # for TTT
         if TTT:
@@ -234,12 +236,12 @@ class GaussianDiffusion(nn.Module):
 
 
     @torch.no_grad()
-    def p_sample_loop(self, x_in, sample_type='uniform', continous=False, ttt_opt=None, matched_state=1000):
+    def p_sample_loop(self, x_in, continous=False, ttt_opt=None, matched_state=1000):
         device = self.betas.device
-        if sample_type == 'uniform':
+        if self.sample_type == 'uniform':
             skip = self.num_timesteps // self.timesteps
             seq = range(0, matched_state, skip)
-        elif sample_type == 'quad':
+        elif self.sample_type == 'quad':
             seq = (np.linspace(
                 0, np.sqrt(self.num_timesteps * 0.8), self.timesteps
             )) ** 2
