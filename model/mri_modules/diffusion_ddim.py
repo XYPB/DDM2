@@ -220,7 +220,7 @@ class GaussianDiffusion(nn.Module):
     @torch.no_grad()
     def p_sample(self, x, t, t_prev, clip_denoised=True, condition_x=None, mask_condition=None, ttt_opt=None):
         x_recon, eps_t = self.p_mean_variance(
-            x=x, t=t, t_prev=t_prev, clip_denoised=clip_denoised, condition_x=condition_x, mask_condition=mask_condition, ttt_opt=ttt_opt)
+            x=x, t=t, clip_denoised=clip_denoised, condition_x=condition_x, mask_condition=mask_condition, ttt_opt=ttt_opt)
         
         # variance noise
         noise = torch.randn_like(x) if t > 0 else torch.zeros_like(x)
