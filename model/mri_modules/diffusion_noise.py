@@ -222,7 +222,7 @@ class GaussianDiffusion(nn.Module):
         
 
         if clip_denoised:
-            eps_t.clamp_(-1., 1.)
+            x_recon.clamp_(-1., 1.)
 
         model_mean, posterior_log_variance = self.q_posterior(
             eps_t=eps_t, x_t=x, t=t)
