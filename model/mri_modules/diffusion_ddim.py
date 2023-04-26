@@ -226,7 +226,7 @@ class GaussianDiffusion(nn.Module):
         noise = torch.randn_like(x) if t > 0 else torch.zeros_like(x)
         ddim_coef1 = self.sqrt_alphas_cumprod[t_prev].view(-1, 1, 1, 1)
         ddim_coef2 = self.eta * torch.sqrt(
-            self.betas * (1 - self.alphas_cumprod[t_prev]) / (1 - self.alphas_cumprod[t])
+            self.betas[t] * (1 - self.alphas_cumprod[t_prev]) / (1 - self.alphas_cumprod[t])
         ).view(-1, 1, 1, 1)
         ddim_coef3 = self.eta * torch.sqrt(
             (1 - self.alphas_cumprod[t_prev]) - ddim_coef1 ** 2
