@@ -238,7 +238,6 @@ class GaussianDiffusion(nn.Module):
     @torch.no_grad()
     def p_sample_loop(self, x_in, continous=False, ttt_opt=None, matched_state=1000):
         device = self.betas.device
-        print(matched_state, self.timesteps)
         if self.timesteps >= matched_state:
             seq = range(0, matched_state)
         elif self.sample_type == 'uniform':
