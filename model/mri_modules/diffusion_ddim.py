@@ -224,14 +224,13 @@ class GaussianDiffusion(nn.Module):
         
         # variance noise
         noise = torch.randn_like(x) if t > 0 else torch.zeros_like(x)
-        ddim_coef1 = self.sqrt_alphas_cumprod[t_prev].view(-1, 1, 1, 1)
+        ddim_coef1 = self.sqrt_alphas_cumprod[t_prev]
         ddim_coef2 = self.eta * torch.sqrt(
             self.betas[t] * (1 - self.alphas_cumprod[t_prev]) / (1 - self.alphas_cumprod[t])
-        ).view(-1, 1, 1, 1)
+        )
         ddim_coef3 = self.eta * torch.sqrt(
             (1 - self.alphas_cumprod[t_prev]) - ddim_coef1 ** 2
-        ).view(-1, 1, 1, 1)
-        print(x_recon.shape, eps_t.shape, ddim_coef1.shape, ddim_coef2.shape, ddim_coef3.shape)
+        )
         x_prev = ddim_coef1 * x_recon + ddim_coef2 * noise + ddim_coef3 * eps_t
         return x_prev, noise, eps_t, x_recon
 
@@ -239,16 +238,19 @@ class GaussianDiffusion(nn.Module):
     @torch.no_grad()
     def p_sample_loop(self, x_in, continous=False, ttt_opt=None, matched_state=1000):
         device = self.betas.device
-        if self.sample_type == 'uniform':
-            skip = self.num_timesteps // self.timesteps
+        if self.timesteps >= matched_state:
+            seq = range(0, matched_state)
+        elif self.sample_type == 'uniform':
+            skip = matched_state // self.timesteps
             seq = range(0, matched_state, skip)
         elif self.sample_type == 'quad':
             seq = (np.linspace(
-                0, np.sqrt(self.num_timesteps * 0.8), self.timesteps
+                0, np.sqrt(matched_state * 0.8), self.timesteps
             )) ** 2
             seq = [int(s) for s in seq]
         else:
             raise NotImplementedError
+        print(seq)
 
         seq_prev = [-1] + list(seq[:-1])
 
