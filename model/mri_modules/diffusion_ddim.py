@@ -250,7 +250,6 @@ class GaussianDiffusion(nn.Module):
             seq = [int(s) for s in seq]
         else:
             raise NotImplementedError
-        print(seq)
 
         seq_prev = [-1] + list(seq[:-1])
 
