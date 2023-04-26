@@ -41,7 +41,8 @@
         }
     },
     "model": {
-        "noise_diffusion": true,
+        "noise_diffusion": false,
+        "ddim": false,
         "which_model_G": "mri", // use the ddpm or sr3 network structure
         "finetune_norm": false,
         "drop_rate": 0.0,
