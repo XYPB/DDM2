@@ -1,4 +1,5 @@
 import sys
+import os
 import argparse
 import numpy as np
 import time
@@ -42,7 +43,8 @@ if __name__ == '__main__':
         t2 = time.time()
         print('Time Taken: ', t2-t1)
 
-        save_nifti('./experiments/hardi150_p2s/denoised_sherbrooke_3shell_p2s_mlp.nii.gz', denoised_sh_mlp, affine)
+        os.makedirs('./experiments/s3sh_p2s', exist_ok=True)
+        save_nifti('./experiments/s3sh_p2s/denoised_sherbrooke_3shell_p2s_mlp.nii.gz', denoised_sh_mlp, affine)
     else:
         data, _ = load_nifti("dataset/stanford_hardi/HARDI150.nii.gz")
         affine = np.eye(4)
@@ -52,4 +54,5 @@ if __name__ == '__main__':
         t2 = time.time()
         print('Time Taken: ', t2-t1)
 
+        os.makedirs('./experiments/hardi150_p2s', exist_ok=True)
         save_nifti('./experiments/hardi150_p2s/denoised_StanfordHardi_p2s_mlp.nii.gz', denoised_sh_mlp, affine)
