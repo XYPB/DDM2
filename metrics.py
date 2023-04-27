@@ -154,7 +154,7 @@ if __name__ == '__main__':
     #exit()
     
     # loading gtab
-    data_root = '/media/administrator/1305D8BDB8D46DEE/stanford/sr3/scripts/data/'
+    data_root = 'dataset/sherbrooke_3shell'
     _, gtab = dpd.read_sherbrooke_3shell()
 
     bvals = gtab.bvals
@@ -172,46 +172,44 @@ if __name__ == '__main__':
     max_data = np.max(data, axis=(0,1,2), keepdims=True)
 
     # loading our data
-    stage1 = np.load('/media/administrator/1305D8BDB8D46DEE/stanford/ours_slices_v25/stage1.npy').astype(np.float32)
+    # stage1 = np.load('/media/administrator/1305D8BDB8D46DEE/stanford/ours_slices_v25/stage1.npy').astype(np.float32)
+    stage1, _ = load_nifti('experiments/s3sh_denoise_230419_170618/results/s3sh_denoised.nii.gz')
+    print(data.shape, stage1.shape)
     data_ours = np.concatenate((data[:,:,:,[0]], stage1), axis=-1)
     data_ours[:,:,:,1:] = data_ours[:,:,:,1:] * max_data[:,:,:,1:]
 
-    # loading p2s
-    data_p2s, _ = load_nifti('/home/administrator/stanford/patch2self-master/notebooks/denoised_hardi193_p2s_mlp.nii.gz')
-    #data_p2s = data_p2s.astype(np.float32) / max_data
-    data_p2s[:,:,:,0] = data[:,:,:,0]
-    data_p2s = data_p2s[..., sel_b]
+    # # loading p2s
+    # data_p2s, _ = load_nifti('/home/administrator/stanford/patch2self-master/notebooks/denoised_hardi193_p2s_mlp.nii.gz')
+    # #data_p2s = data_p2s.astype(np.float32) / max_data
+    # data_p2s[:,:,:,0] = data[:,:,:,0]
+    # data_p2s = data_p2s[..., sel_b]
 
-    # loading mp
-    data_mp, _ = load_nifti(os.path.join(data_root, 's3sh_mp.nii.gz'))
-    #data_mp = data_mp.astype(np.float32) / max_data
-    data_mp[:,:,:,0] = data[:,:,:,0]
-    data_mp = data_mp[..., sel_b]
+    # # loading mp
+    # data_mp, _ = load_nifti(os.path.join(data_root, 's3sh_mp.nii.gz'))
+    # #data_mp = data_mp.astype(np.float32) / max_data
+    # data_mp[:,:,:,0] = data[:,:,:,0]
+    # data_mp = data_mp[..., sel_b]
 
-    # plt.imshow(np.hstack((data[:,:,40,40], data_mp[:,:,40,40], data_p2s[:,:,40,40], data_ours[:,:,40,40])), cmap='gray')
-    # plt.show()
-
-    # exit()
 
     # DTI calculation
     M = DTIMetrics(gtab)
 
     dti_raw = M.calc(data, slice=38)
 
-    dti_mp = M.calc(data_mp, slice=38)
+    # dti_mp = M.calc(data_mp, slice=38)
 
-    print('MP:', np.mean(dti_mp - dti_raw))
+    # print('MP:', np.mean(dti_mp - dti_raw))
 
-    dti_p2s = M.calc(data_p2s, slice=38)
+    # dti_p2s = M.calc(data_p2s, slice=38)
 
-    print('P2S:', np.mean(dti_p2s - dti_raw))
+    # print('P2S:', np.mean(dti_p2s - dti_raw))
 
     dti_ours = M.calc(data_ours, slice=38)
 
     print('Ours:', np.mean(dti_ours - dti_raw))
 
     # plot
-    plot(dti_raw, dti_mp, dti_p2s, dti_ours)
+    # plot(dti_raw, dti_mp, dti_p2s, dti_ours)
 
 
     # CSD calculation TODO
