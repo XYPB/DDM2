@@ -1,6 +1,5 @@
 import sys
-sys.path.append("..")
-
+import argparse
 import numpy as np
 import time
 import matplotlib.pyplot as plt
@@ -8,9 +7,7 @@ from model.patch2self import patch2self
 from dipy.io.image import save_nifti, load_nifti
 from dipy.data import read_stanford_labels
 
-hardi_img, gtab, labels_img = read_stanford_labels()
-data = hardi_img.get_data()
-affine = np.eye(4)
+
 
 def plot(data, denoised_sh_mlp):
     sli = 35
@@ -33,9 +30,26 @@ def plot(data, denoised_sh_mlp):
     plt.show()
 
 if __name__ == '__main__':
-    t1 = time.time()
-    denoised_sh_mlp = patch2self(data, model='mlp')
-    t2 = time.time()
-    print('Time Taken: ', t2-t1)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--s3sh', action='store_true')
+    args = parser.parse_args()
+    if args.s3sh:
+        data, _ = load_nifti("dataset/sherbrooke_3shell/HARDI193.nii.gz")
+        affine = np.eye(4)
+        t1 = time.time()
+        print(data.shape)
+        denoised_sh_mlp = patch2self(data, model='mlp')
+        t2 = time.time()
+        print('Time Taken: ', t2-t1)
 
-    save_nifti('denoised_StanfordHardi_p2s_mlp.nii.gz', denoised_sh_mlp, affine)
+        save_nifti('./experiments/hardi150_p2s/denoised_sherbrooke_3shell_p2s_mlp.nii.gz', denoised_sh_mlp, affine)
+    else:
+        data, _ = load_nifti("dataset/stanford_hardi/HARDI150.nii.gz")
+        affine = np.eye(4)
+        t1 = time.time()
+        print(data.shape)
+        denoised_sh_mlp = patch2self(data, model='mlp')
+        t2 = time.time()
+        print('Time Taken: ', t2-t1)
+
+        save_nifti('./experiments/hardi150_p2s/denoised_StanfordHardi_p2s_mlp.nii.gz', denoised_sh_mlp, affine)
