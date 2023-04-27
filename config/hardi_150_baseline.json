@@ -9,7 +9,7 @@
         "tb_logger": "tb_logger",
         "results": "results",
         "checkpoint": "checkpoint",
-        "resume_state": null
+        "resume_state": "/home/yd344/project/DDM2/experiments/hardi150_230426_063559/checkpoint/latest"
     },
     "datasets": {
         "train": {
@@ -42,6 +42,7 @@
     },
     "model": {
         "noise_diffusion": false,
+        "ddim": false,
         "which_model_G": "mri", // use the ddpm or sr3 network structure
         "finetune_norm": false,
         "drop_rate": 0.0,

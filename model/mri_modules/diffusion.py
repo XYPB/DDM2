@@ -230,7 +230,6 @@ class GaussianDiffusion(nn.Module):
             x=x, t=t, clip_denoised=clip_denoised, condition_x=condition_x, mask_condition=mask_condition, ttt_opt=ttt_opt)
         
         noise = torch.randn_like(x) if t > 0 else torch.zeros_like(x)
-        print((0.5 * model_log_variance).exp())
         return model_mean + noise * (0.5 * model_log_variance).exp(), noise, model_mean, x_recon
 
 

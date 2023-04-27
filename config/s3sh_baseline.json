@@ -9,7 +9,7 @@
         "tb_logger": "tb_logger",
         "results": "results",
         "checkpoint": "checkpoint",
-        "resume_state": null //"/home/users/tiangex/MRI_denoise/experiments/sb_1_state_matching/checkpoint/latest"
+        "resume_state": "/home/yd344/project/DDM2/experiments/s3sh_230426_123305/checkpoint/latest"
     },
     "datasets": {
         "train": {
@@ -40,6 +40,7 @@
     },
     "model": {
         "noise_diffusion": false,
+        "ddim": false,
         "which_model_G": "mri", // use the ddpm or sr3 network structure
         "finetune_norm": false,
         "drop_rate": 0.0,
