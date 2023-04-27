@@ -12,7 +12,8 @@ from torchvision import transforms, utils
 
 
 class MRIDataset(Dataset):
-    def __init__(self, dataroot, valid_mask, phase='train', image_size=128, in_channel=1, val_volume_idx=50, val_slice_idx=40,
+    def __init__(self, dataroot, valid_mask, phase='train', image_size=128, in_channel=1, 
+                 val_volume_idx=50, val_slice_idx=40,
                  padding=1, lr_flip=0.5, stage2_file=None):
         self.padding = padding // 2
         self.lr_flip = lr_flip
