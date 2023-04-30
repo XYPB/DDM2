@@ -40,9 +40,6 @@ class DDM2(BaseModel):
 
         self.load_network()
 
-        if opt['model']['control_net']:
-            self.set_control_net(opt)
-
         if self.opt['phase'] == 'train':
             self.netG.train()
             # find the parameters to optimize
@@ -98,6 +95,7 @@ class DDM2(BaseModel):
             total_loss.backward()
             self.optG.step()
 
+        print('!!!', self.netG.denoisor.zero_downs[0].weight.max())
         # set log
         self.log_dict['l_pix'] = l_pix.item()
 
@@ -224,7 +222,16 @@ class DDM2(BaseModel):
             # network.load_state_dict(torch.load(
             #     gen_path), strict=(not self.opt['model']['finetune_norm']))
             state_dict = torch.load(gen_path)
+            control_net_ckpt = False
+            for k in state_dict.keys():
+                if 'locked_unet' in k:
+                    control_net_ckpt = True
+                    break
+            if control_net_ckpt:
+                self.set_control_net(self.opt)
             missing_keys, _ = network.load_state_dict(state_dict, strict=False)
+            if not control_net_ckpt and self.opt['model']['control_net']:
+                self.set_control_net(self.opt)
             if self.opt['phase'] == 'train' and load_opt:
                 # optimizer
                 opt = torch.load(opt_path)
@@ -242,8 +249,8 @@ class DDM2(BaseModel):
             else:
                 self.netG.load_state_dict(state_dict, strict=False)
 
-    def set_control_net(self, opt):
-        model_opt = opt['model']
+    def set_control_net(self):
+        model_opt = self.opt['model']
         self.netG.denoisor = ControlNet(
             self.netG.denoisor,
             in_channel=model_opt['unet']['in_channel'],
