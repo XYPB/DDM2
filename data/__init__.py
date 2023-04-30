@@ -71,7 +71,8 @@ def create_dataset(dataset_opt, phase, stage2_file=None):
                 padding=dataset_opt['padding'],
                 in_channel=dataset_opt['in_channel'],
                 image_size=dataset_opt['image_size'] if 'image_size' in dataset_opt else None,
-                stage2_file=stage2_file
+                stage2_file=stage2_file,
+                canny_path=dataset_opt['canny_path']
                 )
 
     logger = logging.getLogger('base')

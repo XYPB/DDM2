@@ -171,7 +171,7 @@ class MRIDataset(Dataset):
             raw_input, raw_canny_input = self.rand_transforms([raw_input, raw_canny_input])
             raw_canny_input = self.transforms(raw_canny_input)
         else:
-            raw_input = self.rand_transforms([raw_input])
+            raw_input = self.rand_transforms(raw_input)
         raw_input = self.transforms(raw_input) # only support the first channel for now
         # raw_input = raw_input.view(c, d, w, h)
 
