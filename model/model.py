@@ -233,8 +233,16 @@ class DDM2(BaseModel):
             # network.load_state_dict(torch.load(
             #     gen_path), strict=(not self.opt['model']['finetune_norm']))
             state_dict = torch.load(gen_path)
-            missing_keys = network.load_state_dict(state_dict, strict=False)
-            print(missing_keys)
+            network.load_state_dict(state_dict, strict=False)
+            # manually load denoisor keys if ControlNet
+            if isinstance(network.denoisor, ControlNet):
+                denoisor_state_dict = {}
+                for k, v in state_dict.items():
+                    if 'denoisor' in k:
+                        new_key = k.replace('denoisor.', '')
+                        denoisor_state_dict[new_key] = v
+                missing_kyes = network.denoisor.load_state_dict(denoisor_state_dict, strict=False)
+                print(missing_kyes)
             if self.opt['phase'] == 'train' and load_opt:
                 # optimizer
                 opt = torch.load(opt_path)
