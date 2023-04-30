@@ -95,10 +95,9 @@ class DDM2(BaseModel):
             total_loss.backward()
             self.optG.step()
 
-        print('!!!!', self.netG.denoisor.locked_unet.final_conv1.conv.weight.grad)
-        print('!!!!', self.netG.denoisor.trainable_downs[0].weight.grad)
-        print('!!!!', self.netG.denoisor.trainable_downs[1].res_block.block1.conv.weight.grad)
-        print('!!!!', self.netG.denoisor.zero_downs[0].weight.grad)
+        print('!!!!', self.netG.denoisor.trainable_downs[0].weight.grad.max())
+        print('!!!!', self.netG.denoisor.trainable_downs[1].res_block.block1.conv.weight.grad.max())
+        print('!!!!', self.netG.denoisor.zero_downs[0].weight.grad.max())
 
         # set log
         self.log_dict['l_pix'] = l_pix.item()
