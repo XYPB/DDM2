@@ -228,10 +228,10 @@ class DDM2(BaseModel):
                     control_net_ckpt = True
                     break
             if control_net_ckpt:
-                self.set_control_net(self.opt)
+                self.set_control_net()
             missing_keys, _ = network.load_state_dict(state_dict, strict=False)
             if not control_net_ckpt and self.opt['model']['control_net']:
-                self.set_control_net(self.opt)
+                self.set_control_net()
             if self.opt['phase'] == 'train' and load_opt:
                 # optimizer
                 opt = torch.load(opt_path)
