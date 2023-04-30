@@ -212,6 +212,8 @@ class DDM2(BaseModel):
 
     def load_network(self):
         load_path = self.opt['path']['resume_state']
+        load_opt = not self.opt['model']['control_net']
+        print('!!!!!!!!!!!!!', load_opt)
         if load_path is not None:
             logger.info(
                 'Loading stage2 pretrained model for G [{:s}] ...'.format(load_path))
@@ -225,7 +227,7 @@ class DDM2(BaseModel):
             #     gen_path), strict=(not self.opt['model']['finetune_norm']))
             network.load_state_dict(torch.load(
                 gen_path), strict=False)
-            if self.opt['phase'] == 'train':
+            if self.opt['phase'] == 'train' and load_opt:
                 # optimizer
                 opt = torch.load(opt_path)
                 self.optG.load_state_dict(opt['optimizer'])
