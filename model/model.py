@@ -95,7 +95,6 @@ class DDM2(BaseModel):
             total_loss.backward()
             self.optG.step()
 
-        print('!!!', self.netG.denoisor.zero_downs[0].weight.max())
         # set log
         self.log_dict['l_pix'] = l_pix.item()
 
