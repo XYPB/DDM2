@@ -72,7 +72,7 @@ class DDM2(BaseModel):
         self.load_network()
         self.counter = 0
         if opt['model']['control_net']:
-            self.set_control_net(self, opt)
+            self.set_control_net(opt)
 
     def feed_data(self, data):
         self.data = self.set_device(data)

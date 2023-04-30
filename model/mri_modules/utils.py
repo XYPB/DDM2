@@ -137,3 +137,25 @@ def flip_denoise_noise(x, denoise_fn, noise_levels, flips=[(False, False)]):
 
     x_recon = torch.mean(torch.cat(supports, dim=1), dim=1, keepdim=False)
     return x_recon
+
+
+def flip_canny_denoise(x, canny, denoise_fn, noise_levels, flips=[(False, False)]):
+    b, c, w, h = x.shape
+    #flips = [(False, False), (True, False), (False, True), (True, True)]
+    supports = []
+    c_supports = []
+    
+    for f in flips:
+        supports.append(data_augmentation(x, f[0], f[1]))
+        c_supports.append(data_augmentation(canny, f[0], f[1]))
+    
+    x_recon = denoise_fn(torch.cat(supports, dim=0), torch.cat(c_supports, dim=0), noise_levels)
+    
+    split_x_recon = torch.split(x_recon, b, 0)
+    
+    supports = []
+    for idx, f in enumerate(flips):
+        supports.append(data_augmentation(split_x_recon[idx], f[0], f[1]).unsqueeze(1))
+
+    x_recon = torch.mean(torch.cat(supports, dim=1), dim=1, keepdim=False)
+    return x_recon

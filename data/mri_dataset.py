@@ -9,12 +9,36 @@ import torch
 from dipy.io.image import save_nifti, load_nifti
 from matplotlib import pyplot as plt
 from torchvision import transforms, utils
+import torchvision.transforms.functional as F
+
+
+class RandomVerticalFlipSeq(object):
+    def __init__(self, p=0.5) -> None:
+        self.p = p
+
+    def __call__(self, xs):
+        assert(isinstance(xs, list))
+        if torch.rand(1) < self.p:
+            return [F.vflip(img) for img in xs]
+        return xs
+
+
+class RandomHorizontalFlipSeq(object):
+    def __init__(self, p=0.5) -> None:
+        self.p = p
+
+    def __call__(self, xs):
+        assert(isinstance(xs, list))
+        if torch.rand(1) < self.p:
+            return [F.hflip(img) for img in xs]
+        return xs
+
 
 
 class MRIDataset(Dataset):
     def __init__(self, dataroot, valid_mask, phase='train', image_size=128, in_channel=1, 
                  val_volume_idx=50, val_slice_idx=40,
-                 padding=1, lr_flip=0.5, stage2_file=None):
+                 padding=1, lr_flip=0.5, stage2_file=None, canny_path=None):
         self.padding = padding // 2
         self.lr_flip = lr_flip
         self.phase = phase
@@ -34,6 +58,22 @@ class MRIDataset(Dataset):
         self.data_size_before_padding = raw_data.shape
 
         self.raw_data = np.pad(raw_data, ((0,0), (0,0), (in_channel//2, in_channel//2), (self.padding, self.padding)), mode='wrap')
+        v_flip_trans_builder = transforms.RandomVerticalFlip
+        h_flip_trans_builder = transforms.RandomHorizontalFlip
+
+        if canny_path is not None:
+            raw_canny, _ = load_nifti(canny_path)
+            assert(raw_canny.shape == raw_data.shape)
+            raw_canny = raw_canny.astype(np.float32) / np.max(raw_canny, axis=(0,1,2), keepdims=True)
+
+            # mask data
+            raw_canny = raw_canny[:,:,:,valid_mask[0]:valid_mask[1]] 
+
+            self.raw_canny = np.pad(raw_canny, ((0,0), (0,0), (in_channel//2, in_channel//2), (self.padding, self.padding)), mode='wrap')
+            v_flip_trans_builder = RandomVerticalFlipSeq
+            h_flip_trans_builder = RandomHorizontalFlipSeq
+        else:
+            self.raw_canny = None
 
         # running for Stage3?
         if stage2_file is not None:
@@ -42,13 +82,16 @@ class MRIDataset(Dataset):
         else:
             self.matched_state = None
 
+        
         # transform
         if phase == 'train':
+            self.rand_transforms = transforms.Compose([
+                v_flip_trans_builder(lr_flip),
+                h_flip_trans_builder(lr_flip),
+            ])
             self.transforms = transforms.Compose([
                 transforms.ToTensor(),
                 #transforms.Resize(image_size),
-                transforms.RandomVerticalFlip(lr_flip),
-                transforms.RandomHorizontalFlip(lr_flip),
                 transforms.Lambda(lambda t: (t * 2) - 1)
             ])
         else:
@@ -114,20 +157,28 @@ class MRIDataset(Dataset):
                                     raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,volume_idx:volume_idx+self.padding],
                                     raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,volume_idx+self.padding+1:volume_idx+2*self.padding+1],
                                     raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,[volume_idx+self.padding]]), axis=-1)
-
         elif self.padding == 0:
             raw_input = np.concatenate((
                                     raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,[volume_idx+self.padding-1]],
                                     raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,[volume_idx+self.padding]]), axis=-1)
-        
+
         # w, h, c, d = raw_input.shape
         # raw_input = np.reshape(raw_input, (w, h, -1))
         if len(raw_input.shape) == 4:
             raw_input = raw_input[:,:,0]
+        if self.raw_canny is not None:
+            raw_canny_input = self.raw_canny[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,[volume_idx+self.padding]]
+            raw_input, raw_canny_input = self.rand_transforms([raw_input, raw_canny_input])
+            raw_canny_input = self.transforms(raw_canny_input)
+        else:
+            raw_input = self.rand_transforms([raw_input])
         raw_input = self.transforms(raw_input) # only support the first channel for now
         # raw_input = raw_input.view(c, d, w, h)
 
         ret = dict(X=raw_input[[-1], :, :], condition=raw_input[:-1, :, :])
+
+        if self.raw_canny is not None:
+            ret['canny'] = raw_canny_input
 
         if self.matched_state is not None:
             ret['matched_state'] = torch.zeros(1,) + self.matched_state[volume_idx][slice_idx]
