@@ -58,8 +58,6 @@ class MRIDataset(Dataset):
         self.data_size_before_padding = raw_data.shape
 
         self.raw_data = np.pad(raw_data, ((0,0), (0,0), (in_channel//2, in_channel//2), (self.padding, self.padding)), mode='wrap')
-        v_flip_trans_builder = transforms.RandomVerticalFlip
-        h_flip_trans_builder = transforms.RandomHorizontalFlip
 
         if canny_path is not None:
             raw_canny, _ = load_nifti(canny_path)
@@ -70,8 +68,6 @@ class MRIDataset(Dataset):
             raw_canny = raw_canny[:,:,:,valid_mask[0]:valid_mask[1]] 
 
             self.raw_canny = np.pad(raw_canny, ((0,0), (0,0), (in_channel//2, in_channel//2), (self.padding, self.padding)), mode='wrap')
-            v_flip_trans_builder = RandomVerticalFlipSeq
-            h_flip_trans_builder = RandomHorizontalFlipSeq
         else:
             self.raw_canny = None
 
@@ -86,8 +82,8 @@ class MRIDataset(Dataset):
         # transform
         if phase == 'train':
             self.rand_transforms = transforms.Compose([
-                v_flip_trans_builder(lr_flip),
-                h_flip_trans_builder(lr_flip),
+                RandomVerticalFlipSeq(lr_flip),
+                RandomVerticalFlipSeq(lr_flip),
             ])
             self.transforms = transforms.Compose([
                 transforms.ToTensor(),
@@ -171,7 +167,7 @@ class MRIDataset(Dataset):
             raw_input, raw_canny_input = self.rand_transforms([raw_input, raw_canny_input])
             raw_canny_input = self.transforms(raw_canny_input)
         else:
-            raw_input = self.rand_transforms(raw_input)
+            raw_input = self.rand_transforms([raw_input])
         raw_input = self.transforms(raw_input) # only support the first channel for now
         # raw_input = raw_input.view(c, d, w, h)
 
