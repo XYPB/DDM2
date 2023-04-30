@@ -85,13 +85,15 @@ def canny_detector(img, eps=1.4, weak_th=0.1, strong_th=0.4):
 if __name__ == '__main__':
     raw_data, _ = load_nifti('dataset/sherbrooke_3shell/HARDI193.nii.gz')
     dest = './tmp/s3sh_canny'
+    eps = 2.5
     # raw_data, _ = load_nifti('dataset/stanford_hardi/HARDI150.nii.gz')
     # dest = './tmp/hardi_canny'
+    # eps = 2
     os.makedirs(dest, exist_ok=True)
     _, _, slices, volumes = raw_data.shape
     print(raw_data.shape)
     weak_th_side = np.linspace(0.2, 0.45, volumes)
-    weak_th_mid = np.linspace(0.1, 0.3, volumes)
+    weak_th_mid = np.linspace(0.2, 0.4, volumes)
 
     canny_imgs = []
     for i in tqdm(range(slices)):
