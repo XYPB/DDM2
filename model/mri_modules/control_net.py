@@ -107,6 +107,7 @@ class ControlNet(nn.Module):
         if self.version == 'v2':
             skip = feats.pop()
             zero_cond = control_feats.pop()
+            print(skip.mean())
             skip += zero_cond
             noise = self.locked_unet.final_conv1(x, skip)
             noise = self.locked_unet.final_conv2(noise)
