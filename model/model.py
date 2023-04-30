@@ -81,7 +81,7 @@ class DDM2(BaseModel):
         self.optG.zero_grad()
 
         outputs = self.netG(self.data)
-        print('!!!!'. self.netG.denoisor.locked_unet.final_conv1.conv.weight.grad)
+        print('!!!!', self.netG.denoisor.locked_unet.final_conv1.conv.weight.grad)
         
         if torch.is_tensor(outputs):
             l_pix = outputs
