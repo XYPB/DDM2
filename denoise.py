@@ -9,6 +9,7 @@ import os
 import numpy as np
 from dipy.io.image import save_nifti, load_nifti
 from tqdm import tqdm
+import time
 
 
 if __name__ == "__main__":
@@ -72,7 +73,7 @@ if __name__ == "__main__":
         denoised_volumes = []
         denoised_imgs = []
 
-
+    st = time.time()
     for step,  val_data in enumerate(val_loader):
         idx += 1
         diffusion.feed_data(val_data)
@@ -98,6 +99,9 @@ if __name__ == "__main__":
 
         print('%d done %d to go!!' % (step, len(val_loader)))
 
+    et = time.time()
+    size = len(val_loader)
+    logger.info(f'Total denoise time {et-st:.4f}!!, Average time: {(et-st)/size:.4f}')
     if args.save:
         denoised_imgs = np.concatenate(denoised_imgs, axis=-1) # w, h, N*L
         denoised_imgs = np.clip(denoised_imgs, 0., 1.)
