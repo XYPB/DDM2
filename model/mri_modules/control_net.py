@@ -99,7 +99,6 @@ class ControlNet(nn.Module):
                 skip = feats.pop()
                 zero_cond = control_feats.pop()
                 skip += zero_cond
-                print(skip.mean())
                 x = F.interpolate(x, size=skip.shape[-2:])
                 x = locked_layer(torch.cat((x, skip), dim=1), t)
             else:
