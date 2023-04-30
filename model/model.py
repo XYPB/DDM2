@@ -38,6 +38,8 @@ class DDM2(BaseModel):
         self.set_new_noise_schedule(
             opt['model']['beta_schedule']['train'], schedule_phase='train')
 
+        self.load_network()
+
         if opt['model']['control_net']:
             self.set_control_net(opt)
 
@@ -72,7 +74,7 @@ class DDM2(BaseModel):
             self.log_dict = OrderedDict()
         
         #self.print_network()
-        self.load_network()
+        
         self.counter = 0
 
     def feed_data(self, data):
@@ -233,16 +235,8 @@ class DDM2(BaseModel):
             # network.load_state_dict(torch.load(
             #     gen_path), strict=(not self.opt['model']['finetune_norm']))
             state_dict = torch.load(gen_path)
-            network.load_state_dict(state_dict, strict=False)
-            # manually load denoisor keys if ControlNet
-            if isinstance(network.denoisor, ControlNet):
-                denoisor_state_dict = {}
-                for k, v in state_dict.items():
-                    if 'denoisor' in k:
-                        new_key = k.replace('denoisor.', '')
-                        denoisor_state_dict[new_key] = v
-                missing_kyes = network.denoisor.load_state_dict(denoisor_state_dict, strict=False)
-                print(missing_kyes)
+            missing_keys, _ = network.load_state_dict(state_dict, strict=False)
+            print(missing_keys)
             if self.opt['phase'] == 'train' and load_opt:
                 # optimizer
                 opt = torch.load(opt_path)
