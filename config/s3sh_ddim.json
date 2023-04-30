@@ -81,7 +81,9 @@
         "diffusion": {
             "image_size": 128,
             "channels": 3, //sample channel
-            "conditional": true // unconditional generation or unconditional generation(super_resolution)
+            "conditional": true, // unconditional generation or unconditional generation(super_resolution)
+            "eta": 0,
+            "timesteps": 30
         }
     },
     "train": {
