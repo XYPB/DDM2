@@ -124,7 +124,7 @@ def define_G(opt):
         with_noise_level_emb=False,   
     )
 
-    print(model_opt['model']['sample_type'])
+    print(model_opt['sample_type'])
     if model_opt['noise_diffusion']:
         netG = diffusion_noise.GaussianDiffusion(
             denoisor,
@@ -148,7 +148,7 @@ def define_G(opt):
             schedule_opt=model_opt['beta_schedule']['train'],
             denoise_fn=denoise_fn,
             eta=model_opt['diffusion']['eta'],
-            sample_type=model_opt['model']['sample_type']
+            sample_type=model_opt['sample_type']
         )
     elif model_opt['control_net']:
         netG = diffusion_control_ddim.GaussianDiffusion(
@@ -162,7 +162,7 @@ def define_G(opt):
             schedule_opt=model_opt['beta_schedule']['train'],
             denoise_fn=denoise_fn,
             eta=model_opt['diffusion']['eta'],
-            sample_type=model_opt['model']['sample_type']
+            sample_type=model_opt['sample_type']
         )
     else:
         netG = diffusion.GaussianDiffusion(
