@@ -249,7 +249,9 @@ class GaussianDiffusion(nn.Module):
             )) ** 2
             seq = [int(s) for s in seq]
         else:
-            raise NotImplementedError
+            # default to apply uniform sampling
+            skip = matched_state // self.timesteps
+            seq = range(0, matched_state, skip)
 
         seq_prev = [-1] + list(seq[:-1])
 
