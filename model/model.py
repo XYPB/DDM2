@@ -81,11 +81,11 @@ class DDM2(BaseModel):
         self.optG.zero_grad()
 
         outputs = self.netG(self.data)
-        print('!!!!', self.netG.denoisor.locked_unet.final_conv1.conv.weight.grad)
-        
+
         if torch.is_tensor(outputs):
             l_pix = outputs
             l_pix.backward()
+            
             self.optG.step()
 
         elif type(outputs) is dict:
@@ -94,7 +94,9 @@ class DDM2(BaseModel):
             total_loss = l_pix
             total_loss.backward()
             self.optG.step()
-    
+
+        print('!!!!', self.netG.denoisor.locked_unet.final_conv1.conv.weight.grad)
+
         # set log
         self.log_dict['l_pix'] = l_pix.item()
 
