@@ -44,7 +44,7 @@
     },
     "model": {
         "noise_diffusion": false,
-        "ddim": true,
+        "ddim": false,
         "control_net": true,
         "sample_type": "uniform",
         "which_model_G": "mri", // use the ddpm or sr3 network structure
