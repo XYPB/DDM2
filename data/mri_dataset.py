@@ -61,13 +61,13 @@ class MRIDataset(Dataset):
 
         if canny_path is not None:
             raw_canny, _ = load_nifti(canny_path)
-            assert(raw_canny.shape == raw_data.shape)
             raw_canny = raw_canny.astype(np.float32) / np.max(raw_canny, axis=(0,1,2), keepdims=True)
 
             # mask data
             raw_canny = raw_canny[:,:,:,valid_mask[0]:valid_mask[1]] 
 
             self.raw_canny = np.pad(raw_canny, ((0,0), (0,0), (in_channel//2, in_channel//2), (self.padding, self.padding)), mode='wrap')
+            assert(self.raw_canny.shape == self.raw_data.shape)
         else:
             self.raw_canny = None
 
