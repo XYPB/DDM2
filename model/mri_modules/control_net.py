@@ -79,6 +79,7 @@ class ControlNet(nn.Module):
                 x = locked_layer(x)
                 cond = train_layer(cond)
             zero_cond = zero_layer(cond)
+            print(zero_cond.max())
             feats.append(x)
             control_feats.append(zero_cond)
 
