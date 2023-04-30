@@ -234,7 +234,7 @@ class DDM2(BaseModel):
             #     gen_path), strict=(not self.opt['model']['finetune_norm']))
             state_dict = torch.load(gen_path)
             network.load_state_dict(state_dict, strict=False)
-            print(state_dict.keys)
+            print(state_dict.keys())
             if self.opt['phase'] == 'train' and load_opt:
                 # optimizer
                 opt = torch.load(opt_path)
