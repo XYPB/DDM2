@@ -9,7 +9,7 @@
         "tb_logger": "tb_logger",
         "results": "results",
         "checkpoint": "checkpoint",
-        "resume_state": null //"/home/yd344/project/DDM2/experiments/hardi150_230419_022928/checkpoint/latest"
+        "resume_state": "/home/yd344/project/DDM2/experiments/hardi150_230419_022928/checkpoint/latest"
     },
     "datasets": {
         "train": {
@@ -90,7 +90,7 @@
         }
     },
     "train": {
-        "n_iter": 120000, //150000,
+        "n_iter": 150000, //150000,
         "val_freq": 1e3,
         "save_checkpoint_freq": 1e4,
         "print_freq": 1e2,
