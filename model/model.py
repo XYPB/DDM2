@@ -98,17 +98,6 @@ class DDM2(BaseModel):
             total_loss.backward()
             self.optG.step()
 
-        print('!!!!', self.netG.denoisor.locked_unet.downs[0].weight.grad)
-        print('!!!!', self.netG.denoisor.trainable_downs[0].weight.grad.max())
-        print('!!!!', self.netG.denoisor.trainable_downs[1].res_block.block1.conv.weight.grad.max())
-        print('!!!!', self.netG.denoisor.zero_downs[0].weight.grad.max())
-        print('!!!!', self.netG.denoisor.zero_downs[0].weight.max())
-        print('!!!!', self.netG.denoisor.zero_downs[1].weight.grad.max())
-        print('!!!!', self.netG.denoisor.zero_downs[1].weight.max())
-        print('!!!!', self.netG.denoisor.zero_downs[-1].weight.grad.max())
-        print('!!!!', self.netG.denoisor.zero_downs[-1].weight.max())
-        print()
-
         # set log
         self.log_dict['l_pix'] = l_pix.item()
 
@@ -236,7 +225,6 @@ class DDM2(BaseModel):
             #     gen_path), strict=(not self.opt['model']['finetune_norm']))
             state_dict = torch.load(gen_path)
             missing_keys, _ = network.load_state_dict(state_dict, strict=False)
-            print(missing_keys)
             if self.opt['phase'] == 'train' and load_opt:
                 # optimizer
                 opt = torch.load(opt_path)
