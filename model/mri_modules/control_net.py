@@ -79,7 +79,7 @@ class ControlNet(nn.Module):
                 x = locked_layer(x)
                 cond = train_layer(cond)
             zero_cond = zero_layer(cond)
-            print(zero_cond.mean())
+            print(zero_layer.weight.max(), zero_layer.weight.min())
             feats.append(x)
             control_feats.append(zero_cond)
 
@@ -93,7 +93,7 @@ class ControlNet(nn.Module):
                 x = locked_layer(x)
                 cond = locked_layer(cond)
         zero_cond = self.zero_mid(cond)
-        print(zero_cond.mean())
+        print(self.zero_mid.weight.max(), self.zero_mid.weight.min())
         x += zero_cond
 
         for locked_layer in self.locked_unet.ups:
@@ -114,11 +114,6 @@ class ControlNet(nn.Module):
             noise = self.locked_unet.final_conv2(noise)
         else:
             noise = self.locked_unet.final_conv1(x)
-
-        for param in self.locked_unet.parameters():
-            print(param.requires_grad)
-            assert(param.requires_grad == False)
-            break
 
         return noise
 
