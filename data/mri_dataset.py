@@ -11,6 +11,13 @@ from matplotlib import pyplot as plt
 from torchvision import transforms, utils
 import torchvision.transforms.functional as F
 
+class ToTensorSeq(object):
+    def __init__(self) -> None:
+        pass
+
+    def __call__(self, xs):
+        assert(isinstance(xs, list))
+        return [F.to_tensor(img) for img in xs]
 
 class RandomVerticalFlipSeq(object):
     def __init__(self, p=0.5) -> None:
@@ -82,18 +89,18 @@ class MRIDataset(Dataset):
         # transform
         if phase == 'train':
             self.rand_transforms = transforms.Compose([
+                ToTensorSeq(),
                 RandomVerticalFlipSeq(lr_flip),
                 RandomVerticalFlipSeq(lr_flip),
             ])
             self.transforms = transforms.Compose([
-                transforms.ToTensor(),
-                #transforms.Resize(image_size),
                 transforms.Lambda(lambda t: (t * 2) - 1)
             ])
         else:
+            self.rand_transforms = transforms.Compose([
+                ToTensorSeq(),
+            ])
             self.transforms = transforms.Compose([
-                transforms.ToTensor(),
-                #transforms.Resize(image_size),
                 transforms.Lambda(lambda t: (t * 2) - 1)
             ])
 
@@ -164,6 +171,7 @@ class MRIDataset(Dataset):
             raw_input = raw_input[:,:,0]
         if self.raw_canny is not None:
             raw_canny_input = self.raw_canny[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,[volume_idx+self.padding]]
+            print(raw_input.shape, raw_canny_input.shape)
             raw_input, raw_canny_input = self.rand_transforms([raw_input, raw_canny_input])
             raw_canny_input = self.transforms(raw_canny_input)
         else:
