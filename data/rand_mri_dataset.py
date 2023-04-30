@@ -159,11 +159,9 @@ class RandMRIDataset(Dataset):
         if self.padding > 0:
             index_in_pad = list(range(volume_idx, volume_idx+self.padding)) + list(range(volume_idx+self.padding+1, volume_idx+2*self.padding+1))
             indexes = random.sample(index_in_pad, k=self.rand_sample_size)
-            print(index_in_pad, indexes)
             sampled = [raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,[idx]] for idx in indexes]
             sampled.append(raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,[volume_idx+self.padding]])
             raw_input = np.concatenate(sampled, axis=-1)
-            print(raw_input.shape)
         elif self.padding == 0:
             raw_input = np.concatenate((
                                     raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,[volume_idx+self.padding-1]],
