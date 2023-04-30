@@ -96,7 +96,8 @@ class DDM2(BaseModel):
             self.optG.step()
 
         print('!!!!', self.netG.denoisor.locked_unet.final_conv1.conv.weight.grad)
-        print('!!!!', self.netG.denoisor.trainable_downs[0].res_block.block1.conv.weight.grad)
+        print('!!!!', self.netG.denoisor.trainable_downs[0].weight.grad)
+        print('!!!!', self.netG.denoisor.trainable_downs[1].res_block.block1.conv.weight.grad)
         print('!!!!', self.netG.denoisor.zero_downs[0].weight.grad)
 
         # set log
