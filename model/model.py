@@ -249,3 +249,4 @@ class DDM2(BaseModel):
             image_size=model_opt['diffusion']['image_size'],
             version=model_opt['unet']['version']
         )
+        self.set_device(self.netG)

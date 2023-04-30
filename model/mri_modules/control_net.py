@@ -115,5 +115,10 @@ class ControlNet(nn.Module):
         else:
             noise = self.locked_unet.final_conv1(x)
 
+        for param in self.locked_unet.parameters():
+            print(param.requires_grad)
+            assert(param.requires_grad == False)
+            break
+
         return noise
 
