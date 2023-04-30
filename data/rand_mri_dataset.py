@@ -51,6 +51,7 @@ class RandMRIDataset(Dataset):
         self.phase = phase
         self.in_channel = in_channel
         self.rand_sample_size = rand_sample_size
+        print(self.padding, self.rand_sample_size)
 
         # read data
         raw_data, _ = load_nifti(dataroot) # width, height, slices, gradients
