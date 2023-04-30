@@ -184,6 +184,7 @@ class MRIDataset(Dataset):
 
         if self.raw_canny is not None:
             ret['canny'] = raw_canny_input.type(torch.FloatTensor)
+            print(raw_canny_input.max(), ret['X'].max())
 
         if self.matched_state is not None:
             ret['matched_state'] = torch.zeros(1,) + self.matched_state[volume_idx][slice_idx]
