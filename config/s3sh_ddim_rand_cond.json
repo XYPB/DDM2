@@ -9,7 +9,7 @@
         "tb_logger": "tb_logger",
         "results": "results",
         "checkpoint": "checkpoint",
-        "resume_state": "/home/yd344/project/DDM2/experiments/s3sh_230426_045920/checkpoint/latest"
+        "resume_state": null //"/home/yd344/project/DDM2/experiments/s3sh_230426_045920/checkpoint/latest"
     },
     "datasets": {
         "rand_sample": true,
@@ -106,7 +106,7 @@
     },
     // for Phase1
     "noise_model": {
-        "resume_state": "/home/yd344/project/DDM2/experiments/sb_1_state_matching_noisemodel_230307_191642/checkpoint/latest", //"/home/users/tiangex/MRI_denoise/experiments/sb_1_noisemodel/checkpoint/latest",
+        "resume_state": null, //"/home/yd344/project/DDM2/experiments/sb_1_state_matching_noisemodel_230307_191642/checkpoint/latest", //"/home/users/tiangex/MRI_denoise/experiments/sb_1_noisemodel/checkpoint/latest",
         "drop_rate": 0.0,
         "unet": {
             "in_channel": 2,
@@ -140,5 +140,5 @@
             "lr": 1e-4
         }
     },
-    "stage2_file": "/home/yd344/project/DDM2/experiments/sb_1_state_matching_noisemodel_230307_191642/stages.txt"
+    "stage2_file": null //"/home/yd344/project/DDM2/experiments/sb_1_state_matching_noisemodel_230307_191642/stages.txt"
 }

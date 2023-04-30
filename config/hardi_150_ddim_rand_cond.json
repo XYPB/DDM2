@@ -9,7 +9,7 @@
         "tb_logger": "tb_logger",
         "results": "results",
         "checkpoint": "checkpoint",
-        "resume_state": "/home/yd344/project/DDM2/experiments/hardi150_230419_022928/checkpoint/latest"
+        "resume_state": null //"/home/yd344/project/DDM2/experiments/hardi150_230419_022928/checkpoint/latest"
     },
     "datasets": {
         "rand_sample": true,
@@ -108,7 +108,7 @@
     },
     // for Phase1
     "noise_model": {
-        "resume_state": "/home/yd344/project/DDM2/experiments/hardi150_noisemodel_230307_184932/checkpoint/latest",
+        "resume_state": null, //"/home/yd344/project/DDM2/experiments/hardi150_noisemodel_230307_184932/checkpoint/latest",
         "drop_rate": 0.0,
         "unet": {
             "in_channel": 2,
@@ -142,5 +142,5 @@
             "lr": 1e-4
         }
     },
-    "stage2_file": "/home/yd344/project/DDM2/experiments/hardi150_noisemodel_230307_184932/stages.txt"
+    "stage2_file": null //"/home/yd344/project/DDM2/experiments/hardi150_noisemodel_230307_184932/stages.txt"
 }
