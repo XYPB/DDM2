@@ -183,7 +183,7 @@ class MRIDataset(Dataset):
         ret = dict(X=raw_input[[-1], :, :], condition=raw_input[:-1, :, :])
 
         if self.raw_canny is not None:
-            ret['canny'] = raw_canny_input
+            ret['canny'] = raw_canny_input.to(torch.FloatTensor)
 
         if self.matched_state is not None:
             ret['matched_state'] = torch.zeros(1,) + self.matched_state[volume_idx][slice_idx]
