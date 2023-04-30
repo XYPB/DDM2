@@ -41,6 +41,9 @@ if __name__ == "__main__":
     # dataset
     for phase, dataset_opt in opt['datasets'].items():
         if phase == 'train' and args.phase != 'val':
+            if dataset_opt['rand_sample']:
+                dataset_opt['padding'] = 3
+                dataset_opt['rand_sample_size'] = 2
             train_set = Data.create_dataset(dataset_opt, phase, stage2_file=stage2_file)
             train_loader = Data.create_dataloader(
                 train_set, dataset_opt, phase)
