@@ -38,6 +38,9 @@ class DDM2(BaseModel):
         self.set_new_noise_schedule(
             opt['model']['beta_schedule']['train'], schedule_phase='train')
 
+        if opt['model']['control_net']:
+            self.set_control_net(opt)
+
         if self.opt['phase'] == 'train':
             self.netG.train()
             # find the parameters to optimize
@@ -71,8 +74,6 @@ class DDM2(BaseModel):
         #self.print_network()
         self.load_network()
         self.counter = 0
-        if opt['model']['control_net']:
-            self.set_control_net(opt)
 
     def feed_data(self, data):
         self.data = self.set_device(data)
@@ -95,9 +96,16 @@ class DDM2(BaseModel):
             total_loss.backward()
             self.optG.step()
 
+        print('!!!!', self.netG.denoisor.locked_unet.downs[0].weight.grad)
         print('!!!!', self.netG.denoisor.trainable_downs[0].weight.grad.max())
         print('!!!!', self.netG.denoisor.trainable_downs[1].res_block.block1.conv.weight.grad.max())
         print('!!!!', self.netG.denoisor.zero_downs[0].weight.grad.max())
+        print('!!!!', self.netG.denoisor.zero_downs[0].weight.max())
+        print('!!!!', self.netG.denoisor.zero_downs[1].weight.grad.max())
+        print('!!!!', self.netG.denoisor.zero_downs[1].weight.max())
+        print('!!!!', self.netG.denoisor.zero_downs[-1].weight.grad.max())
+        print('!!!!', self.netG.denoisor.zero_downs[-1].weight.max())
+        print()
 
         # set log
         self.log_dict['l_pix'] = l_pix.item()
@@ -213,7 +221,6 @@ class DDM2(BaseModel):
     def load_network(self):
         load_path = self.opt['path']['resume_state']
         load_opt = not self.opt['model']['control_net']
-        print('!!!!!!!!!!!!!', load_opt)
         if load_path is not None:
             logger.info(
                 'Loading stage2 pretrained model for G [{:s}] ...'.format(load_path))
@@ -225,8 +232,9 @@ class DDM2(BaseModel):
                 network = network.module
             # network.load_state_dict(torch.load(
             #     gen_path), strict=(not self.opt['model']['finetune_norm']))
-            network.load_state_dict(torch.load(
-                gen_path), strict=False)
+            state_dict = torch.load(gen_path)
+            network.load_state_dict(state_dict, strict=False)
+            print(state_dict.keys)
             if self.opt['phase'] == 'train' and load_opt:
                 # optimizer
                 opt = torch.load(opt_path)

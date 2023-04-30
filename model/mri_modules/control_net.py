@@ -79,7 +79,6 @@ class ControlNet(nn.Module):
                 x = locked_layer(x)
                 cond = train_layer(cond)
             zero_cond = zero_layer(cond)
-            print(zero_layer.weight.max(), zero_layer.weight.min())
             feats.append(x)
             control_feats.append(zero_cond)
 
@@ -93,7 +92,6 @@ class ControlNet(nn.Module):
                 x = locked_layer(x)
                 cond = locked_layer(cond)
         zero_cond = self.zero_mid(cond)
-        print(self.zero_mid.weight.max(), self.zero_mid.weight.min())
         x += zero_cond
 
         for locked_layer in self.locked_unet.ups:
