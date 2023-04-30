@@ -51,7 +51,6 @@ class RandMRIDataset(Dataset):
         self.phase = phase
         self.in_channel = in_channel
         self.rand_sample_size = rand_sample_size
-        print(self.padding, self.rand_sample_size)
 
         # read data
         raw_data, _ = load_nifti(dataroot) # width, height, slices, gradients
@@ -164,7 +163,7 @@ class RandMRIDataset(Dataset):
             sampled = [raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,[idx]] for idx in indexes]
             sampled.append(raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,[volume_idx+self.padding]])
             raw_input = np.concatenate(sampled, axis=-1)
-            print(sampled.shape)
+            print(raw_input.shape)
         elif self.padding == 0:
             raw_input = np.concatenate((
                                     raw_input[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,[volume_idx+self.padding-1]],
