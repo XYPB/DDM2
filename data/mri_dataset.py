@@ -170,9 +170,9 @@ class MRIDataset(Dataset):
         if len(raw_input.shape) == 4:
             raw_input = raw_input[:,:,0]
         if self.raw_canny is not None:
+            raw_canny_input = self.raw_canny[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,[volume_idx+self.padding]]
             if len(raw_canny_input.shape) == 4:
                 raw_canny_input = raw_canny_input[:, :, 0]
-            raw_canny_input = self.raw_canny[:,:,slice_idx:slice_idx+2*(self.in_channel//2)+1,[volume_idx+self.padding]]
             print(raw_input.shape, raw_canny_input.shape)
             raw_input, raw_canny_input = self.rand_transforms([raw_input, raw_canny_input])
             raw_canny_input = self.transforms(raw_canny_input)
