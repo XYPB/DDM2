@@ -7,7 +7,7 @@ from copy import deepcopy
 from .unet import exists, ResnetBlocWithAttn
 
 
-def zero_conv1x1(in_channels, out_channels, stride):
+def zero_conv1x1(in_channels, out_channels, stride=1):
     conv = nn.Conv2d(in_channels, out_channels, 1, stride, 0)
     nn.init.constant_(conv.weight, 0)
     nn.init.constant_(conv.bias, 0)
