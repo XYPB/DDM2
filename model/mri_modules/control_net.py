@@ -18,14 +18,10 @@ class ControlNet(nn.Module):
         self,
         unet,
         in_channel=6,
-        out_channel=3,
         inner_channel=32,
-        norm_groups=32,
         channel_mults=(1, 2, 4, 8, 8),
-        attn_res=(8),
         res_blocks=3,
         dropout=0,
-        with_noise_level_emb=True,
         image_size=128,
         version='v2'
     ):

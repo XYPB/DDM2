@@ -6,6 +6,7 @@ import torch.nn as nn
 import os
 import model.networks as networks
 from .base_model import BaseModel
+from .mri_modules.control_net import ControlNet
 
 
 logger = logging.getLogger('base')
@@ -70,6 +71,8 @@ class DDM2(BaseModel):
         #self.print_network()
         self.load_network()
         self.counter = 0
+        if opt['model']['control_net']:
+            self.set_control_net(self, opt)
 
     def feed_data(self, data):
         self.data = self.set_device(data)
@@ -233,3 +236,16 @@ class DDM2(BaseModel):
                 self.netG.module.load_state_dict(state_dict, strict=False)
             else:
                 self.netG.load_state_dict(state_dict, strict=False)
+
+    def set_control_net(self, opt):
+        model_opt = opt['model']
+        self.netG.denoisor = ControlNet(
+            self.netG.denoisor,
+            in_channel=model_opt['unet']['in_channel'],
+            inner_channel=model_opt['unet']['inner_channel'],
+            channel_mults=model_opt['unet']['channel_multiplier'],
+            res_blocks=model_opt['unet']['res_blocks'],
+            dropout=model_opt['drop_rate'],
+            image_size=model_opt['diffusion']['image_size'],
+            version=model_opt['unet']['version']
+        )
