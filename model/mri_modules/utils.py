@@ -161,6 +161,6 @@ def flip_canny_denoise(x, canny, denoise_fn, noise_levels, flips=[(False, False)
     return x_recon
 
 def norm_data(data):
-    min_data = torch.min(data, axis=(0,1,2), keepdims=True)
-    max_data = torch.max(data, axis=(0,1,2), keepdims=True)
+    min_data = torch.min(data, dim=(0,1,2), keepdim=True)
+    max_data = torch.max(data, dim=(0,1,2), keepdim=True)
     return (data.type(torch.float32) - min_data) / (max_data - min_data)
