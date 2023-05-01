@@ -35,7 +35,7 @@
             "phase": "val",
             "padding": 3,
             "val_volume_idx": 32,
-            "val_slice_idx": "all",
+            "val_slice_idx": 32,
             "train_volume_idx":2, // 0 1 2
             "batch_size": 1,
             "in_channel": 1,

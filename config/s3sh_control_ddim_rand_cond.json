@@ -9,7 +9,7 @@
         "tb_logger": "tb_logger",
         "results": "results",
         "checkpoint": "checkpoint",
-        "resume_state": null //"/home/yd344/project/DDM2/experiments/s3sh_230426_045920/checkpoint/latest"
+        "resume_state": "/home/yd344/project/DDM2/experiments/s3sh_230430_195226/checkpoint/latest"
     },
     "datasets": {
         "train": {
@@ -25,7 +25,8 @@
             "num_workers": 0,
             "use_shuffle": true,
             "rand_sample_size": 2,
-            "rand_sample": true
+            "rand_sample": true,
+            "canny_path": "/home/yd344/project/DDM2/dataset/sherbrooke_3shell/HARDI193_canny.nii.gz"
         },
         "val": {
             "name": "s3sh",
@@ -34,17 +35,19 @@
             "phase": "val",
             "padding": 3,
             "val_volume_idx": 40,
-            "val_slice_idx": "all",
+            "val_slice_idx": 32,
             "batch_size": 1,
             "in_channel": 1,
             "num_workers": 0,
             "rand_sample_size": 2,
-            "rand_sample": true
+            "rand_sample": true,
+            "canny_path": "/home/yd344/project/DDM2/dataset/sherbrooke_3shell/HARDI193_canny.nii.gz"
         }
     },
     "model": {
         "noise_diffusion": false,
-        "ddim": true,
+        "ddim": false,
+        "control_net": true,
         "sample_type": "uniform",
         "which_model_G": "mri", // use the ddpm or sr3 network structure
         "finetune_norm": false,
@@ -91,7 +94,7 @@
         }
     },
     "train": {
-        "n_iter": 100000, //150000,
+        "n_iter": 50000, //150000,
         "val_freq": 1e3,
         "save_checkpoint_freq": 1e4,
         "print_freq": 1e2,
