@@ -26,7 +26,11 @@ class RandomVerticalFlipSeq(object):
     def __call__(self, xs):
         assert(isinstance(xs, list))
         if torch.rand(1) < self.p:
-            return [F.vflip(img) for img in xs]
+            ret = []
+            for img in xs:
+                ret.append(F.vflip(img))
+                print(img.shape)
+            return ret
         return xs
 
 
