@@ -1,5 +1,6 @@
 import cv2
 import os
+import argparse
 import numpy as np
 from dipy.io.image import save_nifti, load_nifti
 import matplotlib.pyplot as plt
@@ -82,12 +83,18 @@ def canny_detector(img, eps=1.4, weak_th=0.1, strong_th=0.4):
     # gradients of edges
     return mag
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--raw_data', type=str, default='dataset/sherbrooke_3shell/HARDI193.nii.gz')
+parser.add_argument('--dest', type=str, default='./tmp/s3sh_canny')
+parser.add_argument('--save_img', action='store_true')
+
+
 if __name__ == '__main__':
-    raw_data, _ = load_nifti('dataset/sherbrooke_3shell/HARDI193.nii.gz')
-    dest = './tmp/s3sh_canny'
-    # raw_data, _ = load_nifti('dataset/stanford_hardi/HARDI150.nii.gz')
-    # dest = './tmp/hardi_canny'
-    os.makedirs(dest, exist_ok=True)
+    args = parser.parse_args()
+    raw_data, _ = load_nifti(args.raw_data)
+    dest = args.dest
+    if args.save_img:
+        os.makedirs(dest, exist_ok=True)
     _, _, slices, volumes = raw_data.shape
     print(raw_data.shape)
     weak_th_side = np.linspace(0.2, 0.45, volumes)
@@ -103,13 +110,14 @@ if __name__ == '__main__':
                 weak_th = weak_th_mid[j]
             img = raw_data[:, :, i, j]
             canny = canny_detector(img, eps=2, weak_th=weak_th)
-            plt.imsave(os.path.join(dest, f'canny_{i}_{j}_orig.png'), img, cmap='gray')
-            plt.imsave(os.path.join(dest, f'canny_{i}_{j}.png'), canny, cmap='gray')
+            if args.save_img:
+                plt.imsave(os.path.join(dest, f'canny_{i}_{j}_orig.png'), img, cmap='gray')
+                plt.imsave(os.path.join(dest, f'canny_{i}_{j}.png'), canny, cmap='gray')
             slice_imgs.append(canny)
         slice_imgs = np.stack(slice_imgs, axis=-1)
         canny_imgs.append(slice_imgs)
     canny_imgs = np.stack(canny_imgs, axis=-2)
     print(canny_imgs.shape)
 
-    save_nifti('dataset/sherbrooke_3shell/HARDI193_canny.nii.gz', canny_imgs, affine=np.eye(4))
-    # save_nifti('dataset/stanford_hardi/HARDI150_canny.nii.gz', canny_imgs, affine=np.eye(4))
+    nifti_dest = args.raw_data.replace('.nii.gz', '_canny.nii.gz')
+    save_nifti(nifti_dest, canny_imgs, affine=np.eye(4))
