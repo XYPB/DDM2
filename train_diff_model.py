@@ -110,10 +110,10 @@ if __name__ == "__main__":
                             denoised_img[:,:], '{}/{}_{}_denoised.png'.format(result_path, current_step, idx))
                         Metrics.save_img(
                             input_img[:,:], '{}/{}_{}_input.png'.format(result_path, current_step, idx))
-  
+
                     diffusion.set_new_noise_schedule(
                         opt['model']['beta_schedule']['train'], schedule_phase='train')
-   
+
                 if current_step % opt['train']['save_checkpoint_freq'] == 0:
                     logger.info('Saving models and training states.')
                     diffusion.save_network(current_epoch, current_step, save_last_only=True)
