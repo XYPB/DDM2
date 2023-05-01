@@ -295,12 +295,14 @@ class GaussianDiffusion(nn.Module):
     def sample(self, x_in, continous=False):
         matched_state = self.num_timesteps
         x_in['X'] = torch.randn_like(x_in['X'])
-        return self.p_sample_loop(x_in, continous, matched_state=matched_state)
+        output = self.p_sample_loop(x_in, continous, matched_state=matched_state)
+        return norm_data(output)
 
     @torch.no_grad()
     def denoise(self, x_in, continous=False, ttt_opt=None):
         matched_state = int(x_in['matched_state'][0].item()) # b, 1
-        return self.p_sample_loop(x_in, continous, ttt_opt=ttt_opt, matched_state=matched_state)
+        output = self.p_sample_loop(x_in, continous, ttt_opt=ttt_opt, matched_state=matched_state)
+        return norm_data(output)
 
     def q_sample(self, x_start, continuous_sqrt_alpha_cumprod, noise=None):
         noise = default(noise, lambda: torch.randn_like(x_start))
