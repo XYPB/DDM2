@@ -106,35 +106,12 @@ class DTIMetrics():
         return self.eval(data[..., slice:slice+1, :])
         
 
-def load_ours_single_stage(path):
-    
-    volumes = []
-    for volume_idx in range(0, 64):
-        slices = []
-        for slice_idx in range(0, 60):
-            slices.append(np.load(os.path.join(path, str(volume_idx), str(slice_idx)+'.npy')))
-        volumes.append(np.array(slices))
-    volumes = np.array(volumes).transpose((2, 3, 1, 0))
-    print(volumes.shape)
-    np.save('/media/administrator/1305D8BDB8D46DEE/stanford/ours_slices_v25/stage2.npy', volumes)
-    return volumes
 
-
-def load_ours():
-    #stage0 = load_ours_single_stage('/media/administrator/1305D8BDB8D46DEE/stanford/MRI/experiments/sb_stage0_results/results')
-    #stage1 = load_ours_single_stage('/media/administrator/1305D8BDB8D46DEE/stanford/MRI/experiments/sb_stage1_results/results')
-    #stage2 = load_ours_single_stage('/media/administrator/1305D8BDB8D46DEE/stanford/MRI/experiments/sb_stage2_results/results')
-    stage0 = np.load('/media/administrator/1305D8BDB8D46DEE/stanford/ours_slices/stage0.npy').astype(np.float32)
-    stage1 = np.load('/media/administrator/1305D8BDB8D46DEE/stanford/ours_slices/stage1.npy').astype(np.float32)
-    stage2 = np.load('/media/administrator/1305D8BDB8D46DEE/stanford/ours_slices/stage2.npy').astype(np.float32)
-    #print(np.max(stage0), np.max(stage1), np.max(stage2))
-    return stage0 / 255., stage1 / 255., stage2 / 255.
-
-def plot(data_dti, mp_dti, p2s_dti, our_dti):
+def plot(data_dti, ddm_dti, p2s_dti, our_dti):
     import seaborn as sns
     from statannot import add_stat_annotation
 
-    df_diff = pd.DataFrame({'(MP) DTI':mp_dti - data_dti,
+    df_diff = pd.DataFrame({'(DDM) DTI':ddm_dti - data_dti,
                         '(P2S) DTI':p2s_dti - data_dti,
                         '(Our) DTI':our_dti - data_dti})
     
@@ -144,51 +121,54 @@ def plot(data_dti, mp_dti, p2s_dti, our_dti):
 
     
     add_stat_annotation(ax, data=pd.melt(df_diff), x="variable", y="value",
-                        box_pairs=[('(MP - Noisy) DTI', '(P2S - Noisy) DTI', '(Our - Noisy) DTI')],
+                        box_pairs=[('(DDM - Noisy) DTI', '(P2S - Noisy) DTI', '(Our - Noisy) DTI')],
                                 test='t-test_ind', text_format='star', loc='outside', verbose=2)
 
 if __name__ == '__main__':
-
-    # load results
-    #load_ours_single_stage('/media/administrator/1305D8BDB8D46DEE/stanford/MRI/experiments/v25_220326_084934/results')
-    #exit()
-    
     # loading gtab
-    data_root = 'dataset/sherbrooke_3shell'
+    # data_root = 'dataset/stanford_hardi/HARDI150.nii.gz'
+    # _, gtab = dpd.read_stanford_hardi()
+    # mask = [10, 160]
+    data_root = 'dataset/sherbrooke_3shell/HARDI193.nii.gz'
     _, gtab = dpd.read_sherbrooke_3shell()
+    mask = [65,129]
 
     bvals = gtab.bvals
     bvecs = gtab.bvecs
+
+    # bvals = bvals[mask[0]:mask[1]]
+    # bvecs = bvecs[mask[0]:mask[1]]
 
     sel_b = np.logical_or(bvals == 0, bvals == 2000)
 
     gtab = gradient_table(bvals[sel_b], bvecs[sel_b])
 
     # loading original datla
-    data, _ = load_nifti(os.path.join(data_root, 'HARDI193.nii.gz'))
-    
+    data, _ = load_nifti(data_root)
+    # data = data[..., mask[0]:mask[1]]
+
     #data = data.astype(np.float32) / max_data
     data = data[..., sel_b]
     max_data = np.max(data, axis=(0,1,2), keepdims=True)
 
     # loading our data
-    # stage1 = np.load('/media/administrator/1305D8BDB8D46DEE/stanford/ours_slices_v25/stage1.npy').astype(np.float32)
-    stage1, _ = load_nifti('experiments/s3sh_denoise_230419_170618/results/s3sh_denoised.nii.gz')
+    stage1, _ = load_nifti('experiments/s3sh_denoise_230430_045617_ddim/results/s3sh_denoised.nii.gz')
     print(data.shape, stage1.shape)
     data_ours = np.concatenate((data[:,:,:,[0]], stage1), axis=-1)
     data_ours[:,:,:,1:] = data_ours[:,:,:,1:] * max_data[:,:,:,1:]
 
-    # # loading p2s
-    # data_p2s, _ = load_nifti('/home/administrator/stanford/patch2self-master/notebooks/denoised_hardi193_p2s_mlp.nii.gz')
-    # #data_p2s = data_p2s.astype(np.float32) / max_data
-    # data_p2s[:,:,:,0] = data[:,:,:,0]
-    # data_p2s = data_p2s[..., sel_b]
+    # loading p2s
+    data_p2s, _ = load_nifti('experiments/s3sh_p2s/denoised_sherbrooke_3shell_p2s_mlp.nii.gz')
+    # data_p2s = data_p2s[..., mask[0]:mask[1]]
+    #data_p2s = data_p2s.astype(np.float32) / max_data
+    data_p2s[:,:,:,0] = data[:,:,:,0]
+    data_p2s = data_p2s[..., sel_b]
 
-    # # loading mp
-    # data_mp, _ = load_nifti(os.path.join(data_root, 's3sh_mp.nii.gz'))
-    # #data_mp = data_mp.astype(np.float32) / max_data
-    # data_mp[:,:,:,0] = data[:,:,:,0]
-    # data_mp = data_mp[..., sel_b]
+    # loading ddm
+    data_ddm, _ = load_nifti('experiments/s3sh_denoise_230426_233927_baseline/results/s3sh_denoised.nii.gz')
+    #data_ddm = data_ddm.astype(np.float32) / max_data
+    data_ddm = np.concatenate((data[:,:,:,[0]], data_ddm), axis=-1)
+    data_ddm[:,:,:,1:] = data_ddm[:,:,:,1:][..., sel_b[mask[0]:mask[1]]]
 
 
     # DTI calculation
@@ -196,37 +176,20 @@ if __name__ == '__main__':
 
     dti_raw = M.calc(data, slice=38)
 
-    # dti_mp = M.calc(data_mp, slice=38)
+    print(data_ddm.shape, data.shape)
+    dti_ddm = M.calc(data_ddm, slice=38)
 
-    # print('MP:', np.mean(dti_mp - dti_raw))
+    print('ddm:', np.mean(dti_ddm - dti_raw))
 
-    # dti_p2s = M.calc(data_p2s, slice=38)
+    dti_p2s = M.calc(data_p2s, slice=38)
 
-    # print('P2S:', np.mean(dti_p2s - dti_raw))
+    print('P2S:', np.mean(dti_p2s - dti_raw))
 
     dti_ours = M.calc(data_ours, slice=38)
 
     print('Ours:', np.mean(dti_ours - dti_raw))
 
     # plot
-    # plot(dti_raw, dti_mp, dti_p2s, dti_ours)
+    plot(dti_raw, dti_ddm, dti_p2s, dti_ours)
 
-
-    # CSD calculation TODO
-
-    # M = CSDMetrics(gtab)
-
-    # csd_raw = M.calc(data, slice=38)
-
-    # csd_mp = M.calc(data_mp, slice=38)
-
-    # print('MP:', np.mean(csd_mp - csd_raw))
-
-    # csd_p2s = M.calc(data_p2s, slice=30)
-
-    # print('P2S:', np.mean(csd_p2s - csd_raw))
-
-    # csd_ours = M.calc(data_ours, slice=None)
-
-    # print('Ours:', np.mean(csd_ours - csd_raw))
 
