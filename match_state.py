@@ -128,8 +128,8 @@ for _,  data in tqdm(enumerate(val_loader)):
         result = sqrt_alphas_cumprod_prev[min_t] * denoised.detach() + (1. - sqrt_alphas_cumprod_prev[min_t]**2).sqrt() * noise
         denoised_np = denoised.detach().cpu().numpy()[0,0]
         input_np = data['X'].detach().cpu().numpy()[0,0]
-        cond1_np = data['cond'].detach().cpu().numpy()[0,0]
-        cond2_np = data['cond'].detach().cpu().numpy()[0,1]
+        cond1_np = data['condition'].detach().cpu().numpy()[0,0]
+        cond2_np = data['condition'].detach().cpu().numpy()[0,1]
         result_np = result.detach().cpu().numpy()[0,0]
         noise = data['X'] - sqrt_alphas_cumprod_prev[t] * denoised
         noise_mean = torch.mean(noise)
