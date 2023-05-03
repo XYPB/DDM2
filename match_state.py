@@ -36,6 +36,7 @@ parser.add_argument('-p', '--phase', type=str, choices=['train', 'val'],
                     help='Run either train(training) or val(generation)', default='train')
 parser.add_argument('-gpu', '--gpu_ids', type=str, default=None)
 parser.add_argument('--debug', action='store_true')
+parser.add_argument('--save', action='store_true')
 
 # parse configs
 args = parser.parse_args()
@@ -127,16 +128,28 @@ for _,  data in tqdm(enumerate(val_loader)):
         result = sqrt_alphas_cumprod_prev[min_t] * denoised.detach() + (1. - sqrt_alphas_cumprod_prev[min_t]**2).sqrt() * noise
         denoised_np = denoised.detach().cpu().numpy()[0,0]
         input_np = data['X'].detach().cpu().numpy()[0,0]
+        cond1_np = data['cond'].detach().cpu().numpy()[0,0]
+        cond2_np = data['cond'].detach().cpu().numpy()[0,1]
         result_np = result.detach().cpu().numpy()[0,0]
+        noise = data['X'] - sqrt_alphas_cumprod_prev[t] * denoised
+        noise_mean = torch.mean(noise)
+        noise = noise - noise_mean
+        noise_np = noise.detach().cpu().numpy()[0,0]
 
         result_np = (result_np + 1.) / 2.
         input_np = (input_np + 1.) / 2.
-        plt.imshow(np.hstack((input_np, result_np, denoised_np)), cmap='gray')
-        plt.show()
-        
+        # plt.imshow(np.hstack((input_np, result_np, denoised_np)), cmap='gray')
+        # plt.show()
+        plt.imsave('./tmp/match/denoised.jpg', denoised_np, cmap='gray')
+        plt.imsave('./tmp/match/input.jpg', input_np, cmap='gray')
+        plt.imsave('./tmp/match/cond1.jpg', cond1_np, cmap='gray')
+        plt.imsave('./tmp/match/cond2.jpg', cond2_np, cmap='gray')
+        plt.imsave('./tmp/match/result.jpg', result_np, cmap='gray')
+        plt.imsave('./tmp/match/noise.jpg', result_np, cmap='gray')
+
         print(min_t, np.max(result_np), np.min(result_np))
         break
-        
+
     volume_idx = (idx - 1) // val_set.raw_data.shape[-2]
     slice_idx = (idx - 1) % val_set.raw_data.shape[-2]
     #min_t = 500

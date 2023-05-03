@@ -154,6 +154,8 @@ class MRIDataset(Dataset):
             slice_idx = self.val_slice_idx[s_index]
             volume_idx = self.val_volume_idx[index]
 
+        print(slice_idx, volume_idx)
+
         raw_input = self.raw_data
         if self.padding > 0:
             raw_input = np.concatenate((
