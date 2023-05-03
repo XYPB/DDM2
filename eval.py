@@ -80,7 +80,6 @@ class MRIMetrics():
 def get_dti_csd_score(args):
     data, bvals, bvecs, data_path, local_slice = args
     M = MRIMetrics(bvals, bvecs, data)
-    print(data_path.replace('.nii.gz', '_dti.npy'))
 
     our_data, _ = load_nifti(data_path)
     our_data = norm_data(our_data)
