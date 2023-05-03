@@ -95,7 +95,7 @@ idx = 0
 stage_file = open(opt['stage2_file'],'w+')
 for _,  data in tqdm(enumerate(val_loader)):
     idx += 1
-    if idx != 3074 and args.debug:
+    if idx != 3075 and args.debug:
         continue
     data = trainer.set_device(data)
     denoised = trainer.netG.denoise(data)
