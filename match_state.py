@@ -148,7 +148,7 @@ for _,  data in tqdm(enumerate(val_loader)):
         plt.imsave('./tmp/match/cond1.jpg', cond1_np, cmap='gray')
         plt.imsave('./tmp/match/cond2.jpg', cond2_np, cmap='gray')
         plt.imsave('./tmp/match/result.jpg', result_np, cmap='gray')
-        plt.imsave('./tmp/match/noise.jpg', result_np, cmap='gray')
+        plt.imsave('./tmp/match/noise.jpg', noise_np, cmap='gray')
 
         print(min_t, np.max(result_np), np.min(result_np))
         break
