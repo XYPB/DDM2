@@ -154,8 +154,6 @@ class MRIDataset(Dataset):
             slice_idx = self.val_slice_idx[s_index]
             volume_idx = self.val_volume_idx[index]
 
-        print(slice_idx, volume_idx)
-
         raw_input = self.raw_data
         if self.padding > 0:
             raw_input = np.concatenate((
@@ -182,7 +180,7 @@ class MRIDataset(Dataset):
         raw_input = self.transforms(raw_input) # only support the first channel for now
         # raw_input = raw_input.view(c, d, w, h)
 
-        ret = dict(X=raw_input[[-1], :, :], condition=raw_input[:-1, :, :])
+        ret = dict(X=raw_input[[-1], :, :], condition=raw_input[:-1, :, :], idx=[slice_idx, volume_idx])
 
         if self.raw_canny is not None:
             ret['canny'] = raw_canny_input.type(torch.FloatTensor)

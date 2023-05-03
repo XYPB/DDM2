@@ -135,6 +135,7 @@ for _,  data in tqdm(enumerate(val_loader)):
         noise_mean = torch.mean(noise)
         noise = noise - noise_mean
         noise_np = noise.detach().cpu().numpy()[0,0]
+        print(data['idx'])
 
         result_np = (result_np + 1.) / 2.
         input_np = (input_np + 1.) / 2.
