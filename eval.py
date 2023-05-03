@@ -78,6 +78,7 @@ class MRIMetrics():
 
 def get_dti_csd_score(data, bvals, bvecs, data_path, local_slice=None):
     M = MRIMetrics(bvals, bvecs, data)
+    print(data_path.replace('.nii.gz', '_dti.npy'))
 
     our_data, _ = load_nifti(data_path)
     our_data = norm_data(our_data)
@@ -86,7 +87,7 @@ def get_dti_csd_score(data, bvals, bvecs, data_path, local_slice=None):
     our_dti, our_csd = M.calc(our_data, slice=local_slice)
 
     np.save(data_path.replace('.nii.gz', '_dti.npy'), our_dti)
-    np.save(data_path.replace('.nii.gz', '_dti.npy'), our_csd)
+    np.save(data_path.replace('.nii.gz', '_csd.npy'), our_csd)
 
 
 if __name__ == '__main__':
