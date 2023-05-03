@@ -95,6 +95,8 @@ idx = 0
 stage_file = open(opt['stage2_file'],'w+')
 for _,  data in tqdm(enumerate(val_loader)):
     idx += 1
+    if idx != 3074 and args.debug:
+        continue
     data = trainer.set_device(data)
     denoised = trainer.netG.denoise(data)
 
@@ -123,7 +125,7 @@ for _,  data in tqdm(enumerate(val_loader)):
         else:
             prev_diff = diff
 
-    if idx == 30 and args.debug:
+    if idx == 3074 and args.debug:
         noise = torch.randn_like(denoised)
         result = sqrt_alphas_cumprod_prev[min_t] * denoised.detach() + (1. - sqrt_alphas_cumprod_prev[min_t]**2).sqrt() * noise
         denoised_np = denoised.detach().cpu().numpy()[0,0]
