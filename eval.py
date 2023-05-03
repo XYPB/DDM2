@@ -8,6 +8,7 @@ import dipy.reconst.cross_validation as xval
 import dipy.reconst.dti as DTI
 import dipy.reconst.csdeconv as CSD
 import scipy.stats as stats
+from functools import partial
 from multiprocessing import Pool
 
 
@@ -76,7 +77,8 @@ class MRIMetrics():
         return dti, csd
     
 
-def get_dti_csd_score(data, bvals, bvecs, data_path, local_slice=None):
+def get_dti_csd_score(args):
+    data, bvals, bvecs, data_path, local_slice = args
     M = MRIMetrics(bvals, bvecs, data)
     print(data_path.replace('.nii.gz', '_dti.npy'))
 
@@ -111,7 +113,7 @@ if __name__ == '__main__':
         'experiments/hardi150_p2s/denoised_StanfordHardi_p2s_mlp.nii.gz',
     ]
 
-    args = [(data, bvals, bvecs, d) for d in data_path]
+    args = [(data, bvals, bvecs, d, None) for d in data_path]
 
     with Pool(4) as p:
         p.map(get_dti_csd_score, args)
