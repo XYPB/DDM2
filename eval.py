@@ -4,9 +4,6 @@ from dipy.core.gradients import gradient_table
 from dipy.io.gradients import read_bvals_bvecs
 from dipy.io.image import load_nifti, save_nifti
 from dipy.segment.mask import median_otsu
-from dipy.reconst.dti import TensorModel
-from dipy.segment.mask import segment_from_cfa
-from dipy.segment.mask import bounding_box
 import dipy.reconst.cross_validation as xval
 import dipy.reconst.dti as DTI
 import dipy.reconst.csdeconv as CSD
