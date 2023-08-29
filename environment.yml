@@ -1,4 +1,4 @@
-name: tiange
+name: ddm2
 channels:
   - pytorch
   - defaults
